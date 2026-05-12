@@ -10,12 +10,18 @@ import StarRating from '../components/movie/StarRating'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
 import useRatings from '../hooks/useRatings'
+import {
+  addToWatchlist,
+  removeFromWatchlist,
+  isInWatchlist,
+} from '../utils/watchlistStorage'
 
 function MovieDetails() {
   const { id } = useParams()
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [watchlisted, setWatchlisted] = useState(false)
   const { getRating, rate, unrate } = useRatings()
 
   useEffect(() => {
@@ -23,10 +29,29 @@ function MovieDetails() {
     setError(null)
     movieService
       .getMovieDetails(id)
-      .then(data => setMovie(data))
+      .then(data => {
+        setMovie(data)
+        setWatchlisted(isInWatchlist(data.id))
+      })
       .catch(() => setError('Could not load movie details.'))
       .finally(() => setLoading(false))
   }, [id])
+
+  const toggleWatchlist = () => {
+    if (watchlisted) {
+      removeFromWatchlist(movie.id)
+      setWatchlisted(false)
+    } else {
+      addToWatchlist({
+        id: movie.id,
+        title: movie.title,
+        poster: movie.poster,
+        rating: movie.rating,
+        releaseDate: movie.releaseDate,
+      })
+      setWatchlisted(true)
+    }
+  }
 
   if (loading) return <MainLayout><Loader /></MainLayout>
 
@@ -44,11 +69,38 @@ function MovieDetails() {
 
       <div className='max-w-6xl mx-auto mt-8 px-4 space-y-12'>
         <div className='flex flex-col md:flex-row gap-8'>
-          <img
-            src={movie.poster}
-            alt={movie.title}
-            className='w-full md:w-64 rounded-xl object-cover shadow-lg flex-shrink-0'
-          />
+          <div className='flex-shrink-0 flex flex-col gap-3'>
+            <img
+              src={movie.poster}
+              alt={movie.title}
+              className='w-full md:w-56 rounded-xl object-cover shadow-lg'
+            />
+            <button
+              onClick={toggleWatchlist}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all ${
+                watchlisted
+                  ? 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-red-400/10 hover:text-red-400 hover:border-red-400/30'
+                  : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-green-400/10 hover:text-green-400 hover:border-green-400/30'
+              }`}
+            >
+              {watchlisted ? (
+                <>
+                  <svg viewBox='0 0 24 24' fill='currentColor' className='w-4 h-4'>
+                    <path d='M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z' />
+                  </svg>
+                  Saved to Watchlist
+                </>
+              ) : (
+                <>
+                  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                    <path d='M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z' />
+                  </svg>
+                  Add to Watchlist
+                </>
+              )}
+            </button>
+          </div>
+
           <div className='flex-1 space-y-6'>
             <MovieInfo movie={movie} />
 
