@@ -51,9 +51,7 @@ function Navbar() {
     <nav className='sticky top-0 z-50 backdrop-blur-md bg-[#14181c]/80 border-b border-white/5'>
       <div className='max-w-7xl mx-auto px-6 py-3 flex items-center justify-between'>
         <Link to='/' className='flex items-center gap-2 group'>
-          <div className='w-8 h-8 rounded-lg bg-green-400 flex items-center justify-center'>
-            <span className='text-black font-black text-sm'>N</span>
-          </div>
+          <img src='/logo.png' alt='Nerdify' className='h-10 w-auto' />
           <span className='text-xl font-black tracking-tight text-white group-hover:text-green-400 transition-colors'>
             Nerdify
           </span>
