@@ -18,8 +18,8 @@ const LABELS = {
   7.5: 'Great',
   8: 'Excellent',
   8.5: 'Brilliant',
-  9: 'Superb',
-  9.5: 'Near Perfect',
+  9: 'Unbelievable',
+  9.5: 'Absolute Cinema',
   10: 'Masterpiece',
 }
 
