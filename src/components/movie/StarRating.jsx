@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const LABELS = {
+  0.5: 'Why was this even made?',
   1: 'Unwatchable',
   1.5: 'Terrible',
   2: 'Very Bad',
