@@ -10,7 +10,7 @@ const LABELS = {
   3.5: 'Below Average',
   4: 'Mediocre',
   4.5: 'Okay',
-  5: 'Average',
+  5: 'Mid',
   5.5: 'Fine',
   6: 'Decent',
   6.5: 'Good',
