@@ -16,7 +16,7 @@ function MovieCard({ movie }) {
 
         {userRating && (
           <div className='absolute top-2 right-2 bg-green-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow'>
-            ★ {userRating}
+            ★ {userRating}/10
           </div>
         )}
 
