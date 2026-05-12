@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom'
+import { HashRouter, Routes, Route, Outlet } from 'react-router-dom'
 
 import Home from '../pages/Home'
 import Login from '../pages/Login'
@@ -18,7 +18,7 @@ import ProtectedRoute from '../components/common/ProtectedRoute'
 
 function AppRoutes() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path='/' element={<Home />} />
 
@@ -43,7 +43,7 @@ function AppRoutes() {
 
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
