@@ -1,62 +1,116 @@
 import { useState } from 'react'
 
-const STARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const LABELS = {
+  1: 'Unwatchable',
+  1.5: 'Terrible',
+  2: 'Very Bad',
+  2.5: 'Bad',
+  3: 'Poor',
+  3.5: 'Below Average',
+  4: 'Mediocre',
+  4.5: 'Okay',
+  5: 'Average',
+  5.5: 'Fine',
+  6: 'Decent',
+  6.5: 'Good',
+  7: 'Very Good',
+  7.5: 'Great',
+  8: 'Excellent',
+  8.5: 'Brilliant',
+  9: 'Superb',
+  9.5: 'Near Perfect',
+  10: 'Masterpiece',
+}
 
-function Star({ filled }) {
-  return (
-    <svg viewBox='0 0 24 24' className='w-6 h-6' fill='currentColor'>
-      <path
-        className={filled ? 'text-green-400' : 'text-gray-600'}
-        fill='currentColor'
-        d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'
-      />
-    </svg>
-  )
+function getRatingColor(value) {
+  if (value <= 3) return '#ef4444'
+  if (value <= 5) return '#f97316'
+  if (value <= 7) return '#eab308'
+  if (value <= 8.5) return '#4ade80'
+  return '#22d3ee'
 }
 
 function StarRating({ movieId, currentRating, onRate, onUnrate }) {
-  const [hovered, setHovered] = useState(null)
+  const [dragging, setDragging] = useState(null)
 
-  const displayValue = hovered ?? currentRating ?? 0
+  const displayValue = dragging ?? currentRating ?? null
+  const color = displayValue ? getRatingColor(displayValue) : '#6b7280'
+
+  const handleChange = e => {
+    setDragging(parseFloat(e.target.value))
+  }
+
+  const handleCommit = e => {
+    const value = parseFloat(e.target.value)
+    setDragging(null)
+    if (currentRating === value) {
+      onUnrate(movieId)
+    } else {
+      onRate(movieId, value)
+    }
+  }
 
   return (
-    <div className='flex flex-col gap-2'>
-      <div className='flex items-center gap-1'>
-        <div
-          className='flex gap-0.5 cursor-pointer'
-          onMouseLeave={() => setHovered(null)}
+    <div className='flex flex-col gap-3 w-full max-w-sm'>
+      <div className='flex items-end gap-3'>
+        <span
+          className='text-5xl font-black leading-none tabular-nums transition-colors duration-150'
+          style={{ color }}
         >
-          {STARS.map(star => (
-            <span
-              key={star}
-              onMouseEnter={() => setHovered(star)}
-              onClick={() => {
-                if (currentRating === star) {
-                  onUnrate(movieId)
-                } else {
-                  onRate(movieId, star)
-                }
-              }}
-            >
-              <Star filled={star <= displayValue} />
-            </span>
-          ))}
-        </div>
-
-        {currentRating && (
-          <span className='ml-2 text-green-400 font-bold text-lg'>
-            {currentRating}/10
+          {displayValue !== null ? displayValue.toFixed(1) : '—'}
+        </span>
+        <span className='text-gray-500 text-lg mb-1'>/10</span>
+        {displayValue && LABELS[displayValue] && (
+          <span
+            className='text-sm font-semibold mb-1.5 transition-colors duration-150'
+            style={{ color }}
+          >
+            {LABELS[displayValue]}
           </span>
         )}
       </div>
 
-      <p className='text-gray-400 text-sm'>
-        {hovered
-          ? `Rate: ${hovered}/10`
-          : currentRating
-          ? 'Your rating · click to change or re-click to remove'
-          : 'Click a star to rate out of 10'}
+      <div className='relative w-full'>
+        <input
+          type='range'
+          min='0.5'
+          max='10'
+          step='0.5'
+          value={dragging ?? currentRating ?? 0.5}
+          onChange={handleChange}
+          onMouseUp={handleCommit}
+          onTouchEnd={handleCommit}
+          className='w-full h-2 rounded-full appearance-none cursor-pointer'
+          style={{
+            background: displayValue
+              ? `linear-gradient(to right, ${color} ${((displayValue - 0.5) / 9.5) * 100}%, #374151 ${((displayValue - 0.5) / 9.5) * 100}%)`
+              : '#374151',
+          }}
+        />
+      </div>
+
+      <div className='flex justify-between text-xs text-gray-500 px-0.5'>
+        <span>0.5</span>
+        <span>5</span>
+        <span>10</span>
+      </div>
+
+      <p className='text-gray-500 text-xs'>
+        {currentRating && !dragging
+          ? 'Drag to change · click the score to remove your rating'
+          : dragging
+          ? 'Release to save'
+          : 'Drag the slider to rate'}
       </p>
+
+      {currentRating && !dragging && (
+        <button
+          onClick={() => onUnrate(movieId)}
+          className='text-xs text-gray-500 hover:text-red-400 transition w-fit underline underline-offset-2'
+        >
+          Remove rating
+        </button>
+      )}
     </div>
   )
 }
