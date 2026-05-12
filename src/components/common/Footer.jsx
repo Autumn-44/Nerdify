@@ -2,25 +2,27 @@ import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
-    <footer className='border-t border-white/5 mt-16'>
-      <div className='max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6'>
-        <div className='flex items-center gap-2'>
-          <div className='w-6 h-6 rounded-md bg-green-400 flex items-center justify-center'>
-            <span className='text-black font-black text-xs'>N</span>
-          </div>
-          <span className='font-black text-white'>Nerdify</span>
-          <span className='text-gray-600 text-sm ml-2'>© 2026</span>
+    <footer className='mt-20 border-t' style={{ borderColor: 'rgba(255,255,255,0.06)', background: '#0a0e14' }}>
+      <div className='max-w-[1400px] mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row items-center justify-between gap-6'>
+        <Link to='/' className='flex items-center gap-3 group'>
+          <img src='/logo.png' alt='Nerdify' className='h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity' />
+          <span className='font-black text-sm' style={{ color: '#8b949e' }}>Nerdify</span>
+        </Link>
+
+        <div className='flex items-center gap-6 text-xs' style={{ color: '#8b949e' }}>
+          {[['/', 'Home'], ['/search', 'Search'], ['/watchlist', 'Watchlist'], ['/profile', 'Profile']].map(([to, label]) => (
+            <Link
+              key={to}
+              to={to}
+              className='transition-colors hover:text-white'
+            >
+              {label}
+            </Link>
+          ))}
         </div>
 
-        <div className='flex items-center gap-6 text-sm text-gray-500'>
-          <Link to='/' className='hover:text-white transition-colors'>Home</Link>
-          <Link to='/search' className='hover:text-white transition-colors'>Search</Link>
-          <Link to='/watchlist' className='hover:text-white transition-colors'>Watchlist</Link>
-          <Link to='/profile' className='hover:text-white transition-colors'>Profile</Link>
-        </div>
-
-        <p className='text-gray-600 text-xs'>
-          Movie data provided by TMDB
+        <p className='text-xs' style={{ color: '#484f58' }}>
+          Powered by TMDB · © 2026 Nerdify
         </p>
       </div>
     </footer>

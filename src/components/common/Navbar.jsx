@@ -2,45 +2,10 @@ import { Link, useLocation } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 
 const NAV_LINKS = [
-  {
-    to: '/',
-    label: 'Home',
-    icon: (
-      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-        <path d='M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z' />
-        <polyline points='9 22 9 12 15 12 15 22' />
-      </svg>
-    ),
-  },
-  {
-    to: '/search',
-    label: 'Search',
-    icon: (
-      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-        <circle cx='11' cy='11' r='8' />
-        <line x1='21' y1='21' x2='16.65' y2='16.65' />
-      </svg>
-    ),
-  },
-  {
-    to: '/watchlist',
-    label: 'Watchlist',
-    icon: (
-      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-        <path d='M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z' />
-      </svg>
-    ),
-  },
-  {
-    to: '/profile',
-    label: 'Profile',
-    icon: (
-      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-        <path d='M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2' />
-        <circle cx='12' cy='7' r='4' />
-      </svg>
-    ),
-  },
+  { to: '/', label: 'Home' },
+  { to: '/search', label: 'Search' },
+  { to: '/watchlist', label: 'Watchlist' },
+  { to: '/profile', label: 'Profile' },
 ]
 
 function Navbar() {
@@ -48,46 +13,65 @@ function Navbar() {
   const { user } = useAuth()
 
   return (
-    <nav className='sticky top-0 z-50 backdrop-blur-md bg-[#14181c]/80 border-b border-white/5'>
-      <div className='max-w-7xl mx-auto px-6 py-3 flex items-center justify-between'>
-        <Link to='/' className='flex items-center gap-2 group'>
-          <img src='/logo.png' alt='Nerdify' className='h-10 w-auto' />
-          <span className='text-xl font-black tracking-tight text-white group-hover:text-green-400 transition-colors'>
+    <nav
+      className='sticky top-0 z-50 border-b'
+      style={{
+        background: 'rgba(13,17,23,0.85)',
+        backdropFilter: 'blur(16px)',
+        borderColor: 'rgba(255,255,255,0.06)',
+      }}
+    >
+      <div className='max-w-[1400px] mx-auto px-6 md:px-10 h-16 flex items-center justify-between gap-8'>
+        <Link to='/' className='flex items-center gap-3 flex-shrink-0 group'>
+          <img src='/logo.png' alt='Nerdify' className='h-9 w-auto' />
+          <span
+            className='text-lg font-black tracking-tight hidden sm:block transition-opacity group-hover:opacity-80'
+            style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}
+          >
             Nerdify
           </span>
         </Link>
 
-        <div className='flex items-center gap-1'>
-          {NAV_LINKS.map(({ to, label, icon }) => {
+        <div className='flex items-center gap-1 flex-1 justify-center'>
+          {NAV_LINKS.map(({ to, label }) => {
             const active = pathname === to
             return (
               <Link
                 key={to}
                 to={to}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  active
-                    ? 'bg-green-400/10 text-green-400'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                className='relative px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150'
+                style={{
+                  color: active ? '#4ade80' : '#8b949e',
+                  background: active ? 'rgba(74,222,128,0.08)' : 'transparent',
+                }}
+                onMouseEnter={e => {
+                  if (!active) e.currentTarget.style.color = '#e6edf3'
+                }}
+                onMouseLeave={e => {
+                  if (!active) e.currentTarget.style.color = '#8b949e'
+                }}
               >
-                {icon}
                 {label}
                 {active && (
-                  <span className='w-1 h-1 rounded-full bg-green-400 ml-0.5' />
+                  <span
+                    className='absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full'
+                    style={{ background: '#4ade80' }}
+                  />
                 )}
               </Link>
             )
           })}
-
-          <div className='w-px h-5 bg-white/10 mx-2' />
-
-          <Link
-            to={user ? '/profile' : '/login'}
-            className='px-4 py-2 rounded-lg bg-green-400 text-black text-sm font-bold hover:bg-green-300 transition-colors'
-          >
-            {user ? user.name || 'Account' : 'Sign In'}
-          </Link>
         </div>
+
+        <Link
+          to={user ? '/profile' : '/login'}
+          className='flex-shrink-0 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-150'
+          style={{ background: '#4ade80', color: '#0d1117' }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#86efac')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#4ade80')}
+        >
+          {user ? user.name || 'Account' : 'Sign In'}
+        </Link>
       </div>
     </nav>
   )
