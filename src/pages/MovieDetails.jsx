@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import MovieBanner from '../components/movie/MovieBanner'
 import MovieInfo from '../components/movie/MovieInfo'
 import MovieTrailer from '../components/movie/MovieTrailer'
 import CastCard from '../components/movie/CastCard'
 import SimilarMovies from '../components/movie/SimilarMovies'
+import StarRating from '../components/movie/StarRating'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
+import useRatings from '../hooks/useRatings'
 
 function MovieDetails() {
   const { id } = useParams()
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { getRating, rate, unrate } = useRatings()
 
   useEffect(() => {
     setLoading(true)
@@ -33,6 +36,8 @@ function MovieDetails() {
     </MainLayout>
   )
 
+  const userRating = getRating(String(movie.id))
+
   return (
     <MainLayout>
       <MovieBanner backdrop={movie.backdrop} title={movie.title} tagline={movie.tagline} />
@@ -44,7 +49,21 @@ function MovieDetails() {
             alt={movie.title}
             className='w-full md:w-64 rounded-xl object-cover shadow-lg flex-shrink-0'
           />
-          <MovieInfo movie={movie} />
+          <div className='flex-1 space-y-6'>
+            <MovieInfo movie={movie} />
+
+            <div className='border-t border-white/10 pt-5'>
+              <p className='text-sm text-gray-400 uppercase tracking-widest mb-3 font-semibold'>
+                Your Rating
+              </p>
+              <StarRating
+                movieId={String(movie.id)}
+                currentRating={userRating}
+                onRate={rate}
+                onUnrate={unrate}
+              />
+            </div>
+          </div>
         </div>
 
         {movie.trailerKey && (
