@@ -1,11 +1,12 @@
+import { useContext } from 'react'
 import { Navigate } from 'react-router-dom'
-import useAuth from '../../hooks/useAuth'
+import { AuthContext } from '../../context/AuthContext'
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth()
+  const { user } = useContext(AuthContext)
 
   if (!user) {
-    return <Navigate to='/login' replace />
+    return <Navigate to='/login' />
   }
 
   return children

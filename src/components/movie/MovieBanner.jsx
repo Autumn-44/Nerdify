@@ -1,10 +1,20 @@
-function MovieBanner({ backdrop, title }) {
+function MovieBanner({ backdrop, title, tagline }) {
   return (
     <div
-      className='h-[400px] bg-cover bg-center flex items-end p-10'
-      style={{ backgroundImage: `url(${backdrop})` }}
+      className='w-full h-[420px] bg-cover bg-center relative flex items-end'
+      style={{ backgroundImage: backdrop ? `url(${backdrop})` : 'none' }}
     >
-      <h1 className='text-5xl font-bold'>{title}</h1>
+      <div className='absolute inset-0 bg-gradient-to-t from-[#14181c] via-[#14181c]/60 to-transparent' />
+      <div className='relative z-10 p-8'>
+        <h1 className='text-4xl md:text-5xl font-bold drop-shadow'>
+          {title}
+        </h1>
+        {tagline && (
+          <p className='mt-2 text-gray-300 italic text-lg'>
+            {tagline}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

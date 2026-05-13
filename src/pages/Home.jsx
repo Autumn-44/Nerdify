@@ -6,6 +6,7 @@ import movieService from '../services/movieService'
 function Home() {
   const [movies, setMovies] = useState([])
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -15,6 +16,8 @@ function Home() {
         setMovies(data)
       } catch (error) {
         setError('Could not load trending movies.')
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -30,6 +33,10 @@ function Home() {
 
         {error && (
           <p className='text-red-400'>{error}</p>
+        )}
+
+        {isLoading && (
+          <p className='text-gray-400'>Loading movies...</p>
         )}
 
         <MovieGrid movies={movies} />

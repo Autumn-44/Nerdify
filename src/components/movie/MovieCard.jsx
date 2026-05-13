@@ -1,18 +1,78 @@
 import { Link } from 'react-router-dom'
+import useRatings from '../../hooks/useRatings'
 
 function MovieCard({ movie }) {
-  return (
-    <Link to={`/movie/${movie.id}`}>
-      <div className='bg-[#1c1f26] rounded-lg overflow-hidden hover:scale-105 transition'>
-        <img
-          src={movie.poster}
-          alt={movie.title}
-          className='w-full h-[320px] object-cover'
-        />
+  const { getRating } = useRatings()
+  const userRating = getRating(String(movie.id))
 
-        <div className='p-3'>
-          <h2 className='font-semibold'>{movie.title}</h2>
-          <p className='text-gray-400'>⭐ {movie.rating}</p>
+  return (
+    <Link to={`/movie/${movie.id}`} className='group block'>
+      <div className='relative rounded-xl overflow-hidden bg-[#161b22] transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:shadow-black/60'>
+        <div className='relative aspect-[2/3] overflow-hidden'>
+          <img
+            src={movie.poster}
+            alt={movie.title}
+            className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+          />
+
+          <div
+            className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4'
+            style={{
+              background:
+                'linear-gradient(to top, rgba(13,17,23,0.97) 0%, rgba(13,17,23,0.6) 50%, transparent 100%)',
+            }}
+          >
+            <h2 className='font-bold text-sm leading-tight text-white mb-1 line-clamp-2'>
+              {movie.title}
+            </h2>
+            <div className='flex items-center gap-2'>
+              <span className='text-yellow-400 text-xs font-semibold'>
+                &#9733; {movie.rating}/10
+              </span>
+              {userRating && (
+                <span
+                  className='text-xs font-bold px-2 py-0.5 rounded-full'
+                  style={{
+                    background: 'rgba(74,222,128,0.15)',
+                    color: '#4ade80',
+                  }}
+                >
+                  You: {userRating}/10
+                </span>
+              )}
+            </div>
+            <div className='mt-3'>
+              <span
+                className='text-xs font-semibold px-3 py-1.5 rounded-lg'
+                style={{ background: '#4ade80', color: '#0d1117' }}
+              >
+                View Details
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {userRating && (
+          <div className='absolute top-2 left-2'>
+            <span
+              className='text-xs font-bold px-2 py-1 rounded-full shadow-lg'
+              style={{ background: '#4ade80', color: '#0d1117' }}
+            >
+              &#9733; {userRating}/10
+            </span>
+          </div>
+        )}
+
+        <div className='p-3 group-hover:opacity-0 transition-opacity duration-200'>
+          <h2
+            className='font-semibold text-sm truncate'
+            style={{ color: '#e6edf3' }}
+          >
+            {movie.title}
+          </h2>
+          <p className='text-xs mt-0.5' style={{ color: '#8b949e' }}>
+            &#9733; {movie.rating}/10
+          </p>
         </div>
       </div>
     </Link>

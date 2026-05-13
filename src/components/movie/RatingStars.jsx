@@ -1,7 +1,10 @@
-function RatingStars({ rating }) {
+function RatingStars({ rating, label = 'TMDB' }) {
   return (
-    <div className='flex gap-1 text-yellow-400'>
-      {'⭐'.repeat(rating)}
+    <div className='flex items-center gap-2 text-sm'>
+      <span className='text-yellow-400'>&#9733;</span>
+      <span className='text-gray-300'>
+        {label}: {rating}/10
+      </span>
     </div>
   )
 }
