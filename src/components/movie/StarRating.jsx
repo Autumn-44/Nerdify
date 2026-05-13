@@ -1,24 +1,24 @@
 import { useState } from 'react'
 
 const LABELS = {
-  0.5: 'Barely started',
-  1: 'who even made this',
-  1.5: 'Very bad',
-  2: 'Bad',
-  2.5: 'Weak',
+  0.5: 'Why was this even made?',
+  1: 'Unwatchable',
+  1.5: 'Terrible',
+  2: 'Very Bad',
+  2.5: 'Bad',
   3: 'Poor',
-  3.5: 'Below average',
+  3.5: 'Below Average',
   4: 'Mediocre',
   4.5: 'Okay',
   5: 'Mid',
   5.5: 'Fine',
   6: 'Decent',
   6.5: 'Good',
-  7: 'Very good',
+  7: 'Very Good',
   7.5: 'Great',
   8: 'Excellent',
   8.5: 'Brilliant',
-  9: 'WHAT A FILM',
+  9: 'Unbelievable',
   9.5: 'Absolute Cinema',
   10: 'Masterpiece',
 }
@@ -33,13 +33,17 @@ function getRatingColor(value) {
 
 function StarRating({ movieId, currentRating, onRate, onUnrate }) {
   const [dragging, setDragging] = useState(null)
+
   const displayValue = dragging ?? currentRating ?? null
   const color = displayValue ? getRatingColor(displayValue) : '#6b7280'
 
-  const handleCommit = event => {
-    const value = parseFloat(event.target.value)
-    setDragging(null)
+  const handleChange = e => {
+    setDragging(parseFloat(e.target.value))
+  }
 
+  const handleCommit = e => {
+    const value = parseFloat(e.target.value)
+    setDragging(null)
     if (currentRating === value) {
       onUnrate(movieId)
     } else {

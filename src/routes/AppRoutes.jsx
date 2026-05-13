@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 import {
   HashRouter,
   Routes,
   Route,
 } from 'react-router-dom'
+=======
+import { HashRouter, Routes, Route, Outlet } from 'react-router-dom'
+>>>>>>> 9bf4a6b4c277b7a15bff312bb61cc5f8a6d9f7d2
 
 import Home from '../pages/Home'
 import Login from '../pages/Login'
