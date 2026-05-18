@@ -1,51 +1,12 @@
-<<<<<<< HEAD
-import { useState } from 'react'
-=======
 import { useState, useEffect, useRef } from 'react'
 import MovieGrid from '../components/movie/MovieGrid'
->>>>>>> 9bf4a6b4c277b7a15bff312bb61cc5f8a6d9f7d2
 import MainLayout from '../layouts/MainLayout'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
-import MovieGrid from '../components/movie/MovieGrid'
 
 function Search() {
   const [query, setQuery] = useState('')
   const [movies, setMovies] = useState([])
-<<<<<<< HEAD
-
-  const handleSearch = async e => {
-    e.preventDefault()
-
-    if (!query) return
-
-    const data = await movieService.searchMovies(query)
-
-    setMovies(data)
-  }
-
-  return (
-    <MainLayout>
-      <div>
-        <h1 className='text-4xl font-bold mb-8'>
-          Search Movies
-        </h1>
-
-        <form
-          onSubmit={handleSearch}
-          className='mb-8'
-        >
-          <input
-            type='text'
-            placeholder='Search for movies...'
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            className='bg-[#1c1f26] text-white px-4 py-3 rounded-lg w-full outline-none'
-          />
-        </form>
-
-        <MovieGrid movies={movies} />
-=======
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
@@ -145,10 +106,11 @@ function Search() {
             <MovieGrid movies={movies} />
           </div>
         )}
->>>>>>> 9bf4a6b4c277b7a15bff312bb61cc5f8a6d9f7d2
       </div>
     </MainLayout>
   )
 }
 
 export default Search
+
+// Made with Bob

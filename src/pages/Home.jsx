@@ -9,30 +9,13 @@ function Home() {
   const [movies, setMovies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-<<<<<<< HEAD
-    const fetchMovies = async () => {
-      try {
-        const data = await movieService.getTrendingMovies()
-
-        setMovies(data)
-      } catch (error) {
-        setError('Could not load trending movies.')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchMovies()
-=======
     movieService
       .getTrendingMovies()
       .then(data => setMovies(data))
       .catch(() => setError('Could not load trending movies.'))
       .finally(() => setLoading(false))
->>>>>>> 9bf4a6b4c277b7a15bff312bb61cc5f8a6d9f7d2
   }, [])
 
   return (
@@ -60,13 +43,6 @@ function Home() {
             Trending updated weekly
           </div>
 
-<<<<<<< HEAD
-        {isLoading && (
-          <p className='text-gray-400'>Loading movies...</p>
-        )}
-
-        <MovieGrid movies={movies} />
-=======
           <h1
             className='text-5xl md:text-6xl font-black leading-[1.05] mb-5'
             style={{ letterSpacing: '-0.03em', color: '#e6edf3' }}
@@ -127,7 +103,6 @@ function Home() {
         {loading && <Loader />}
         {error && <p className='text-red-400'>{error}</p>}
         {!loading && !error && <MovieGrid movies={movies} />}
->>>>>>> 9bf4a6b4c277b7a15bff312bb61cc5f8a6d9f7d2
       </div>
     </MainLayout>
   )
