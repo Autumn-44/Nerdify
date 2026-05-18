@@ -5,7 +5,9 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Search from '../pages/Search'
 import Watchlist from '../pages/Watchlist'
+import Diary from '../pages/Diary'
 import MovieDetails from '../pages/MovieDetails'
+import ActorProfile from '../pages/ActorProfile'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 function AppRoutes() {
@@ -14,24 +16,23 @@ function AppRoutes() {
       <Routes>
         <Route path='/' element={<Home />} />
 
-        <Route
-          path='/login'
-          element={<Login />}
-        />
+        <Route path='/login' element={<Login />} />
+
+        <Route path='/register' element={<Register />} />
+
+        <Route path='/search' element={<Search />} />
+
+        <Route path='/movie/:id' element={<MovieDetails />} />
+
+        <Route path='/actor/:id' element={<ActorProfile />} />
 
         <Route
-          path='/register'
-          element={<Register />}
-        />
-
-        <Route
-          path='/search'
-          element={<Search />}
-        />
-
-        <Route
-          path='/movie/:id'
-          element={<MovieDetails />}
+          path='/diary'
+          element={
+            <ProtectedRoute>
+              <Diary />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -48,3 +49,5 @@ function AppRoutes() {
 }
 
 export default AppRoutes
+
+// Made with Bob
