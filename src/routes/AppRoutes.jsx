@@ -8,6 +8,7 @@ import Watchlist from '../pages/Watchlist'
 import Diary from '../pages/Diary'
 import MovieDetails from '../pages/MovieDetails'
 import ActorProfile from '../pages/ActorProfile'
+import LetterboxdImport from '../pages/LetterboxdImport'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 function AppRoutes() {
@@ -43,6 +44,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route path='/import' element={<LetterboxdImport />} />
       </Routes>
     </HashRouter>
   )

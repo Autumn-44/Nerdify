@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import MovieGrid from '../components/movie/MovieGrid'
+import PersonCard from '../components/movie/PersonCard'
 import MainLayout from '../layouts/MainLayout'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
@@ -7,14 +8,17 @@ import movieService from '../services/movieService'
 function Search() {
   const [query, setQuery] = useState('')
   const [movies, setMovies] = useState([])
+  const [people, setPeople] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
+  const [activeTab, setActiveTab] = useState('all') // 'all', 'movies', 'people'
   const debounceRef = useRef(null)
 
   useEffect(() => {
     if (!query.trim()) {
       setMovies([])
+      setPeople([])
       setSearched(false)
       return
     }
@@ -24,11 +28,12 @@ function Search() {
       setIsLoading(true)
       setError('')
       try {
-        const results = await movieService.searchMovies(query.trim())
-        setMovies(results)
+        const results = await movieService.searchMulti(query.trim())
+        setMovies(results.movies)
+        setPeople(results.people)
         setSearched(true)
       } catch {
-        setError('Could not search movies right now.')
+        setError('Could not search right now.')
       } finally {
         setIsLoading(false)
       }
@@ -37,11 +42,15 @@ function Search() {
     return () => clearTimeout(debounceRef.current)
   }, [query])
 
+  const totalResults = movies.length + people.length
+  const filteredMovies = activeTab === 'people' ? [] : movies
+  const filteredPeople = activeTab === 'movies' ? [] : people
+
   return (
     <MainLayout>
       <div className='max-w-3xl mx-auto pt-8 pb-4'>
         <h1 className='text-4xl font-black text-center mb-2'>Find Your Next Watch</h1>
-        <p className='text-gray-400 text-center mb-8'>Search any movie title and dive in</p>
+        <p className='text-gray-400 text-center mb-8'>Search movies, actors, directors, and more</p>
 
         <div className='relative'>
           <svg
@@ -59,7 +68,7 @@ function Search() {
             type='text'
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder='e.g. Interstellar, The Godfather...'
+            placeholder='e.g. Interstellar, Christopher Nolan, Tom Hanks...'
             autoFocus
             className='w-full bg-[#1c1f26] border border-white/10 rounded-xl pl-12 pr-5 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 transition-all'
           />
@@ -80,30 +89,84 @@ function Search() {
 
         {error && <p className='text-red-400 text-center'>{error}</p>}
 
-        {!isLoading && searched && movies.length === 0 && (
+        {!isLoading && searched && totalResults === 0 && (
           <div className='text-center py-20'>
             <p className='text-5xl mb-4'>🎬</p>
             <p className='text-gray-400 text-lg'>No results for "<span className='text-white'>{query}</span>"</p>
-            <p className='text-gray-600 text-sm mt-1'>Try a different title</p>
+            <p className='text-gray-600 text-sm mt-1'>Try a different search term</p>
           </div>
         )}
 
         {!isLoading && !searched && !query && (
           <div className='text-center py-20'>
             <p className='text-5xl mb-4'>🍿</p>
-            <p className='text-gray-500'>Start typing to search millions of films</p>
+            <p className='text-gray-500'>Start typing to search movies and people</p>
           </div>
         )}
 
-        {!isLoading && movies.length > 0 && (
-          <div className='space-y-4'>
-            <div className='flex items-center gap-3'>
-              <p className='text-gray-400 text-sm'>
-                <span className='text-white font-semibold'>{movies.length}</span> results for "{query}"
-              </p>
-              <div className='flex-1 h-px bg-white/5' />
+        {!isLoading && totalResults > 0 && (
+          <div className='space-y-6'>
+            {/* Filter Tabs */}
+            <div className='flex items-center gap-4 border-b border-white/10 pb-4'>
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === 'all'
+                    ? 'bg-green-400/20 text-green-400'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                All ({totalResults})
+              </button>
+              <button
+                onClick={() => setActiveTab('movies')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === 'movies'
+                    ? 'bg-green-400/20 text-green-400'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                Movies ({movies.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('people')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === 'people'
+                    ? 'bg-green-400/20 text-green-400'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                People ({people.length})
+              </button>
             </div>
-            <MovieGrid movies={movies} />
+
+            {/* Movies Section */}
+            {filteredMovies.length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-3'>
+                  <h2 className='text-xl font-bold text-white'>Movies</h2>
+                  <span className='text-gray-400 text-sm'>({filteredMovies.length})</span>
+                  <div className='flex-1 h-px bg-white/5' />
+                </div>
+                <MovieGrid movies={filteredMovies} />
+              </div>
+            )}
+
+            {/* People Section */}
+            {filteredPeople.length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-3'>
+                  <h2 className='text-xl font-bold text-white'>People</h2>
+                  <span className='text-gray-400 text-sm'>({filteredPeople.length})</span>
+                  <div className='flex-1 h-px bg-white/5' />
+                </div>
+                <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4'>
+                  {filteredPeople.map(person => (
+                    <PersonCard key={person.id} person={person} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

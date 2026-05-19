@@ -107,6 +107,60 @@ const searchMovies = async query => {
   return response.data.results.map(normalizeMovie)
 }
 
+const searchPeople = async query => {
+  const response = await api.get('/search/person', {
+    params: { query },
+  })
+  return response.data.results.map(person => ({
+    id: person.id,
+    name: person.name,
+    knownFor: person.known_for_department || 'Acting',
+    profileImage: person.profile_path
+      ? `${IMAGE_BASE_URL}${person.profile_path}`
+      : null,
+    popularity: person.popularity || 0,
+    knownForMovies: (person.known_for || [])
+      .filter(item => item.media_type === 'movie')
+      .slice(0, 3)
+      .map(movie => movie.title || movie.name)
+      .join(', '),
+  }))
+}
+
+const searchMulti = async query => {
+  const response = await api.get('/search/multi', {
+    params: { query },
+  })
+  
+  const results = {
+    movies: [],
+    people: [],
+  }
+  
+  response.data.results.forEach(item => {
+    if (item.media_type === 'movie') {
+      results.movies.push(normalizeMovie(item))
+    } else if (item.media_type === 'person') {
+      results.people.push({
+        id: item.id,
+        name: item.name,
+        knownFor: item.known_for_department || 'Acting',
+        profileImage: item.profile_path
+          ? `${IMAGE_BASE_URL}${item.profile_path}`
+          : null,
+        popularity: item.popularity || 0,
+        knownForMovies: (item.known_for || [])
+          .filter(movie => movie.media_type === 'movie')
+          .slice(0, 3)
+          .map(movie => movie.title || movie.name)
+          .join(', '),
+      })
+    }
+  })
+  
+  return results
+}
+
 const getActorDetails = async actorId => {
   const response = await api.get(`/person/${actorId}`, {
     params: { append_to_response: 'movie_credits' },
@@ -140,6 +194,8 @@ export default {
   getUpcomingMovies,
   getMovieDetails,
   searchMovies,
+  searchPeople,
+  searchMulti,
   getActorDetails,
 }
 
