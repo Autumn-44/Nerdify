@@ -9,6 +9,7 @@ import Diary from '../pages/Diary'
 import MovieDetails from '../pages/MovieDetails'
 import ActorProfile from '../pages/ActorProfile'
 import LetterboxdImport from '../pages/LetterboxdImport'
+import Quiz from '../pages/Quiz'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 function AppRoutes() {
@@ -46,6 +47,8 @@ function AppRoutes() {
         />
 
         <Route path='/import' element={<LetterboxdImport />} />
+
+        <Route path='/quiz' element={<Quiz />} />
       </Routes>
     </HashRouter>
   )
