@@ -4,9 +4,11 @@ import useRatings from '../../hooks/useRatings'
 function MovieCard({ movie }) {
   const { getRating } = useRatings()
   const userRating = getRating(String(movie.id))
+  const isTV = movie.mediaType === 'tv'
+  const linkPath = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`
 
   return (
-    <Link to={`/movie/${movie.id}`} className='group block'>
+    <Link to={linkPath} className='group block'>
       <div className='relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#1a1f2e] to-[#161b22] transition-all duration-300 group-hover:scale-[1.05] group-hover:shadow-2xl group-hover:shadow-green-500/20 border border-white/5 group-hover:border-green-400/30'>
         <div className='relative aspect-[2/3] overflow-hidden'>
           <img
@@ -55,18 +57,6 @@ function MovieCard({ movie }) {
           </div>
         </div>
 
-        {/* User Rating Badge */}
-        {userRating && (
-          <div className='absolute top-2 right-2 z-10'>
-            <span className='text-xs font-bold px-2.5 py-1.5 rounded-full shadow-lg backdrop-blur-md flex items-center gap-1'
-              style={{ background: 'linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)', color: '#0d1117' }}>
-              <svg viewBox='0 0 24 24' fill='currentColor' className='w-3 h-3'>
-                <path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' />
-              </svg>
-              {userRating}
-            </span>
-          </div>
-        )}
 
         {/* Bottom Info (Always Visible) */}
         <div className='p-3 group-hover:opacity-0 transition-opacity duration-200'>

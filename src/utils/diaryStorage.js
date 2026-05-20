@@ -21,6 +21,7 @@ export const addDiaryEntry = (movie, watchedDate, rating = null, publicReview = 
       poster: movie.poster,
       rating: movie.rating,
       releaseDate: movie.releaseDate,
+      mediaType: movie.mediaType || 'movie', // Preserve mediaType (movie, tv, episode)
     },
     watchedDate: watchedDate, // Format: YYYY-MM-DD
     rating: rating, // User's rating (1-10)

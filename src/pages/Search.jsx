@@ -4,20 +4,23 @@ import PersonCard from '../components/movie/PersonCard'
 import MainLayout from '../layouts/MainLayout'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
+import tvShowService from '../services/tvShowService'
 
 function Search() {
   const [query, setQuery] = useState('')
   const [movies, setMovies] = useState([])
+  const [tvShows, setTvShows] = useState([])
   const [people, setPeople] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
-  const [activeTab, setActiveTab] = useState('all') // 'all', 'movies', 'people'
+  const [activeTab, setActiveTab] = useState('all') // 'all', 'movies', 'tv', 'people'
   const debounceRef = useRef(null)
 
   useEffect(() => {
     if (!query.trim()) {
       setMovies([])
+      setTvShows([])
       setPeople([])
       setSearched(false)
       return
@@ -28,9 +31,13 @@ function Search() {
       setIsLoading(true)
       setError('')
       try {
-        const results = await movieService.searchMulti(query.trim())
-        setMovies(results.movies)
-        setPeople(results.people)
+        const [movieResults, tvResults] = await Promise.all([
+          movieService.searchMulti(query.trim()),
+          tvShowService.searchTVShows(query.trim())
+        ])
+        setMovies(movieResults.movies)
+        setTvShows(tvResults)
+        setPeople(movieResults.people)
         setSearched(true)
       } catch {
         setError('Could not search right now.')
@@ -42,15 +49,16 @@ function Search() {
     return () => clearTimeout(debounceRef.current)
   }, [query])
 
-  const totalResults = movies.length + people.length
-  const filteredMovies = activeTab === 'people' ? [] : movies
-  const filteredPeople = activeTab === 'movies' ? [] : people
+  const totalResults = movies.length + tvShows.length + people.length
+  const filteredMovies = (activeTab === 'people' || activeTab === 'tv') ? [] : movies
+  const filteredTvShows = (activeTab === 'people' || activeTab === 'movies') ? [] : tvShows
+  const filteredPeople = (activeTab === 'movies' || activeTab === 'tv') ? [] : people
 
   return (
     <MainLayout>
       <div className='max-w-3xl mx-auto pt-8 pb-4'>
         <h1 className='text-4xl font-black text-center mb-2'>Find Your Next Watch</h1>
-        <p className='text-gray-400 text-center mb-8'>Search movies, actors, directors, and more</p>
+        <p className='text-gray-400 text-center mb-8'>Search movies, TV shows, actors, and more</p>
 
         <div className='relative'>
           <svg
@@ -68,7 +76,7 @@ function Search() {
             type='text'
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder='e.g. Interstellar, Christopher Nolan, Tom Hanks...'
+            placeholder='e.g. Interstellar, Breaking Bad, Tom Hanks...'
             autoFocus
             className='w-full bg-[#1c1f26] border border-white/10 rounded-xl pl-12 pr-5 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 transition-all'
           />
@@ -100,7 +108,7 @@ function Search() {
         {!isLoading && !searched && !query && (
           <div className='text-center py-20'>
             <p className='text-5xl mb-4'>🍿</p>
-            <p className='text-gray-500'>Start typing to search movies and people</p>
+            <p className='text-gray-500'>Start typing to search movies, TV shows, and people</p>
           </div>
         )}
 
@@ -129,6 +137,16 @@ function Search() {
                 Movies ({movies.length})
               </button>
               <button
+                onClick={() => setActiveTab('tv')}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === 'tv'
+                    ? 'bg-green-400/20 text-green-400'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                TV Shows ({tvShows.length})
+              </button>
+              <button
                 onClick={() => setActiveTab('people')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'people'
@@ -149,6 +167,18 @@ function Search() {
                   <div className='flex-1 h-px bg-white/5' />
                 </div>
                 <MovieGrid movies={filteredMovies} />
+              </div>
+            )}
+
+            {/* TV Shows Section */}
+            {filteredTvShows.length > 0 && (
+              <div className='space-y-4'>
+                <div className='flex items-center gap-3'>
+                  <h2 className='text-xl font-bold text-white'>TV Shows</h2>
+                  <span className='text-gray-400 text-sm'>({filteredTvShows.length})</span>
+                  <div className='flex-1 h-px bg-white/5' />
+                </div>
+                <MovieGrid movies={filteredTvShows} />
               </div>
             )}
 

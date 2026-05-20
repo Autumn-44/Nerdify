@@ -17,20 +17,17 @@ function Navbar() {
       }}>
       <div className='max-w-7xl mx-auto px-6 md:px-10 py-4'>
         <div className='flex justify-between items-center'>
-          {/* Logo */}
+          {/* Logo - Simplified */}
           <Link to='/' className='flex items-center gap-3 group'>
-            <div className='relative'>
-              <div className='absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-500 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity'></div>
-              <div className='relative w-12 h-12 bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-110'>
-                <span className='text-2xl'>🎬</span>
-              </div>
+            <div className='relative w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-105'>
+              <span className='text-2xl'>🎬</span>
             </div>
             <div className='flex flex-col'>
-              <span className='text-2xl font-black bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 bg-clip-text text-transparent group-hover:from-orange-300 group-hover:to-red-400 transition-all'>
+              <span className='text-2xl font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent'>
                 Nerdify
               </span>
               <span className='text-[10px] font-semibold text-gray-500 -mt-1 tracking-wider'>
-                MOVIE UNIVERSE
+                CINEMA HUB
               </span>
             </div>
           </Link>
@@ -48,11 +45,25 @@ function Navbar() {
                 <path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' />
                 <polyline points='9 22 9 12 15 12 15 22' />
               </svg>
-              Home
+              Movies
             </Link>
 
-            <Link 
-              to='/search' 
+            <Link
+              to='/tv-shows'
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+                isActive('/tv-shows')
+                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}>
+              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                <rect x='2' y='7' width='20' height='15' rx='2' ry='2' />
+                <polyline points='17 2 12 7 7 2' />
+              </svg>
+              TV Shows
+            </Link>
+
+            <Link
+              to='/search'
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
                 isActive('/search') 
                   ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30' 
@@ -105,21 +116,6 @@ function Navbar() {
                 <line x1='12' y1='17' x2='12.01' y2='17' />
               </svg>
               Quiz
-            </Link>
-
-            <Link
-              to='/import'
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/import')
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
-              }`}>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
-                <polyline points='7 10 12 15 17 10' />
-                <line x1='12' y1='15' x2='12' y2='3' />
-              </svg>
-              Import
             </Link>
 
             <div className='w-px h-6 bg-white/10 mx-2' />

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import { getDiaryEntries, deleteDiaryEntry, getEntriesByMonth, getDatesWithEntries, getWatchingStreak } from '../utils/diaryStorage'
+import episodeStorage from '../utils/episodeStorage'
 
 function Calendar({ selectedDate, onDateSelect, entriesMap }) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -95,10 +96,24 @@ function Calendar({ selectedDate, onDateSelect, entriesMap }) {
 }
 
 function DiaryEntry({ entry, onDelete }) {
+  // Determine the correct link based on media type
+  const getLink = () => {
+    if (entry.movie.mediaType === 'episode') {
+      // Extract show ID from episode ID format: "showId-s1e2"
+      const showId = entry.movie.id.split('-')[0]
+      return `/tv/${showId}`
+    } else if (entry.movie.mediaType === 'tv') {
+      return `/tv/${entry.movie.id}`
+    }
+    return `/movie/${entry.movie.id}`
+  }
+  
+  const linkPath = getLink()
+  
   return (
     <div className='group bg-gradient-to-br from-[#1a1f2e] to-[#161b22] rounded-xl p-4 border border-white/10 hover:border-orange-400/30 transition-all duration-200'>
       <div className='flex gap-4'>
-        <Link to={`/movie/${entry.movie.id}`} className='flex-shrink-0'>
+        <Link to={linkPath} className='flex-shrink-0'>
           <img
             src={entry.movie.poster}
             alt={entry.movie.title}
@@ -108,7 +123,7 @@ function DiaryEntry({ entry, onDelete }) {
         
         <div className='flex-1 min-w-0'>
           <div className='flex items-start justify-between gap-2 mb-2'>
-            <Link to={`/movie/${entry.movie.id}`} className='flex-1'>
+            <Link to={linkPath} className='flex-1'>
               <h3 className='font-bold text-lg text-white hover:text-orange-400 transition-colors line-clamp-1'>
                 {entry.movie.title}
               </h3>
@@ -187,6 +202,23 @@ function Diary() {
   useEffect(() => {
     loadEntries()
   }, [])
+  
+  useEffect(() => {
+    // Reload entries when component becomes visible (user navigates back)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadEntries()
+      }
+    }
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('focus', loadEntries)
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('focus', loadEntries)
+    }
+  }, [])
 
   const loadEntries = () => {
     const allEntries = getDiaryEntries()
@@ -224,9 +256,32 @@ function Diary() {
   }
 
   const totalMovies = entries.length
-  const thisYear = entries.filter(e =>
+  const films = entries.filter(e => !e.movie.mediaType || e.movie.mediaType === 'movie')
+  const series = entries.filter(e => e.movie.mediaType === 'tv')
+  const episodes = entries.filter(e => e.movie.mediaType === 'episode')
+  
+  console.log('Diary entries breakdown:', {
+    total: entries.length,
+    films: films.length,
+    series: series.length,
+    episodes: episodes.length,
+    sample: entries.slice(0, 3).map(e => ({ title: e.movie.title, mediaType: e.movie.mediaType }))
+  })
+  
+  const thisYearFilms = films.filter(e =>
     new Date(e.watchedDate).getFullYear() === new Date().getFullYear()
   ).length
+  
+  // Count unique series (not episodes)
+  const thisYearSeriesSet = new Set()
+  series.filter(e => new Date(e.watchedDate).getFullYear() === new Date().getFullYear())
+    .forEach(e => thisYearSeriesSet.add(e.movie.id))
+  const thisYearSeries = thisYearSeriesSet.size
+  
+  const thisYearEpisodes = episodes.filter(e =>
+    new Date(e.watchedDate).getFullYear() === new Date().getFullYear()
+  ).length
+  
   const currentStreak = getWatchingStreak()
 
   return (
@@ -234,20 +289,26 @@ function Diary() {
       <div className='mb-8'>
         <h1 className='text-4xl font-black mb-2 flex items-center gap-3'>
           <span className='text-5xl'>📔</span>
-          My Movie Diary
+          My Diary
         </h1>
-        <p className='text-gray-400'>Track every movie you watch with dates and notes</p>
+        <p className='text-gray-400'>
+          Watched {thisYearFilms} {thisYearFilms === 1 ? 'film' : 'films'} and {thisYearSeries} {thisYearSeries === 1 ? 'series' : 'series'} this year
+        </p>
       </div>
 
       {/* Stats */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
+      <div className='grid grid-cols-2 md:grid-cols-5 gap-4 mb-8'>
         <div className='bg-gradient-to-br from-orange-400/10 to-orange-500/10 rounded-xl p-6 border border-orange-400/20'>
-          <div className='text-3xl font-black text-orange-400 mb-1'>{totalMovies}</div>
-          <div className='text-sm text-gray-400'>Total Movies Logged</div>
+          <div className='text-3xl font-black text-orange-400 mb-1'>{films.length}</div>
+          <div className='text-sm text-gray-400'>Films Logged</div>
         </div>
         <div className='bg-gradient-to-br from-cyan-400/10 to-cyan-500/10 rounded-xl p-6 border border-cyan-400/20'>
-          <div className='text-3xl font-black text-cyan-400 mb-1'>{thisYear}</div>
-          <div className='text-sm text-gray-400'>Watched This Year</div>
+          <div className='text-3xl font-black text-cyan-400 mb-1'>{series.length}</div>
+          <div className='text-sm text-gray-400'>Series Logged</div>
+        </div>
+        <div className='bg-gradient-to-br from-blue-400/10 to-blue-500/10 rounded-xl p-6 border border-blue-400/20'>
+          <div className='text-3xl font-black text-blue-400 mb-1'>{episodes.length}</div>
+          <div className='text-sm text-gray-400'>Episodes Logged</div>
         </div>
         <div className='bg-gradient-to-br from-purple-400/10 to-purple-500/10 rounded-xl p-6 border border-purple-400/20'>
           <div className='text-3xl font-black text-purple-400 mb-1'>{Object.keys(entriesMap).length}</div>

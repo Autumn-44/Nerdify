@@ -1,22 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import CastCard from '../components/movie/CastCard'
-import Loader from '../components/common/Loader'
-import DatePicker from '../components/common/DatePicker'
-import MainLayout from '../layouts/MainLayout'
-import MovieBanner from '../components/movie/MovieBanner'
-import MovieInfo from '../components/movie/MovieInfo'
-import MovieTrailer from '../components/movie/MovieTrailer'
-import SimilarMovies from '../components/movie/SimilarMovies'
-import StarRating from '../components/movie/StarRating'
-import movieService from '../services/movieService'
-import useRatings from '../hooks/useRatings'
-import {
-  addToWatchlist,
-  isInWatchlist,
-  removeFromWatchlist,
-} from '../utils/watchlistStorage'
-import { addDiaryEntry } from '../utils/diaryStorage'
+import { useState, useEffect, useContext } from 'react'
+import episodeStorage from '../../utils/episodeStorage'
+import { RatingsContext } from '../../context/RatingsContext'
+import { addDiaryEntry } from '../../utils/diaryStorage'
+import DatePicker from '../common/DatePicker'
 
 const RATING_LABELS = {
   0.5: 'Why was this even made?',
@@ -49,62 +35,53 @@ function getRatingColor(value) {
   return '#22d3ee'
 }
 
-function MovieDetails() {
-  const { id } = useParams()
-  const [movie, setMovie] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [watchlisted, setWatchlisted] = useState(false)
+function EpisodeList({ show, season }) {
+  const [episodes, setEpisodes] = useState([])
+  const [watchedEpisodes, setWatchedEpisodes] = useState(new Set())
   const [showDiaryModal, setShowDiaryModal] = useState(false)
+  const [selectedEpisode, setSelectedEpisode] = useState(null)
   const [diaryDate, setDiaryDate] = useState(new Date().toISOString().split('T')[0])
   const [diaryRating, setDiaryRating] = useState(null)
   const [draggingRating, setDraggingRating] = useState(null)
   const [publicReview, setPublicReview] = useState('')
   const [privateNote, setPrivateNote] = useState('')
-  const { getRating, rate, unrate } = useRatings()
+  const { rate, unrate, getRating } = useContext(RatingsContext)
 
   useEffect(() => {
-    setLoading(true)
-    setError('')
-
-    movieService
-      .getMovieDetails(id)
-      .then(data => {
-        setMovie(data)
-        setWatchlisted(isInWatchlist(data.id))
+    if (season?.episodes) {
+      setEpisodes(season.episodes)
+      
+      // Load watched status
+      const watched = new Set()
+      season.episodes.forEach(ep => {
+        if (episodeStorage.isEpisodeWatched(show.id, season.season_number, ep.episode_number)) {
+          watched.add(ep.episode_number)
+        }
       })
-      .catch(() => setError('Could not load movie details.'))
-      .finally(() => setLoading(false))
-  }, [id])
-
-  const toggleWatchlist = () => {
-    if (!movie) return
-
-    if (watchlisted) {
-      removeFromWatchlist(movie.id)
-      setWatchlisted(false)
-    } else {
-      addToWatchlist({
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        rating: movie.rating,
-        releaseDate: movie.releaseDate,
-      })
-      setWatchlisted(true)
+      setWatchedEpisodes(watched)
     }
+  }, [season, show.id])
+
+  const openDiaryModal = (episode) => {
+    setSelectedEpisode(episode)
+    const ratingKey = `tv-${show.id}-s${season.season_number}e${episode.episode_number}`
+    const existingRating = getRating(ratingKey)
+    setDiaryRating(existingRating || null)
+    setShowDiaryModal(true)
   }
 
   const handleAddToDiary = () => {
-    if (!movie) return
+    if (!selectedEpisode) return
     
+    // Add to diary
     addDiaryEntry(
       {
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        rating: movie.rating,
-        releaseDate: movie.releaseDate,
+        id: `${show.id}-s${season.season_number}e${selectedEpisode.episode_number}`,
+        title: `${show.name} - S${season.season_number}E${selectedEpisode.episode_number}: ${selectedEpisode.name}`,
+        poster: show.poster_path,
+        rating: diaryRating,
+        releaseDate: selectedEpisode.air_date,
+        mediaType: 'episode',
       },
       diaryDate,
       diaryRating,
@@ -112,12 +89,34 @@ function MovieDetails() {
       privateNote
     )
     
+    // Save rating
+    if (diaryRating) {
+      const ratingKey = `tv-${show.id}-s${season.season_number}e${selectedEpisode.episode_number}`
+      rate(ratingKey, diaryRating)
+    }
+    
+    // Mark as watched
+    if (!watchedEpisodes.has(selectedEpisode.episode_number)) {
+      episodeStorage.logEpisode({
+        showId: show.id,
+        showName: show.name,
+        showPoster: show.poster_path,
+        seasonNumber: season.season_number,
+        episodeNumber: selectedEpisode.episode_number,
+        episodeName: selectedEpisode.name,
+        episodeOverview: selectedEpisode.overview,
+        airDate: selectedEpisode.air_date
+      })
+      setWatchedEpisodes(prev => new Set([...prev, selectedEpisode.episode_number]))
+    }
+    
+    // Reset and close
     setShowDiaryModal(false)
     setDiaryRating(null)
     setDraggingRating(null)
     setPublicReview('')
     setPrivateNote('')
-    alert('Added to diary!')
+    setSelectedEpisode(null)
   }
 
   const handleRatingChange = (e) => {
@@ -130,122 +129,145 @@ function MovieDetails() {
     setDraggingRating(null)
   }
 
-  if (loading) {
+  const toggleEpisodeWatched = (episode) => {
+    const isWatched = watchedEpisodes.has(episode.episode_number)
+    
+    if (isWatched) {
+      // Remove from watched
+      episodeStorage.removeEpisode(show.id, season.season_number, episode.episode_number)
+      setWatchedEpisodes(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(episode.episode_number)
+        return newSet
+      })
+      
+      // Remove rating if exists
+      const ratingKey = `tv-${show.id}-s${season.season_number}e${episode.episode_number}`
+      unrate(ratingKey)
+    } else {
+      // Open diary modal instead of just marking watched
+      openDiaryModal(episode)
+    }
+  }
+
+  const getEpisodeRating = (episode) => {
+    const ratingKey = `tv-${show.id}-s${season.season_number}e${episode.episode_number}`
+    return getRating(ratingKey) || 0
+  }
+
+  if (!episodes.length) {
     return (
-      <MainLayout>
-        <Loader />
-      </MainLayout>
+      <div className='text-center py-8' style={{ color: '#8b949e' }}>
+        No episodes available for this season
+      </div>
     )
   }
 
-  if (error || !movie) {
-    return (
-      <MainLayout>
-        <p className='text-red-400 text-center py-20'>
-          {error || 'Movie not found.'}
-        </p>
-      </MainLayout>
-    )
-  }
-
-  const userRating = getRating(String(movie.id))
   const displayRating = draggingRating ?? diaryRating
   const ratingColor = displayRating ? getRatingColor(displayRating) : '#6b7280'
 
   return (
-    <MainLayout>
-      <MovieBanner
-        backdrop={movie.backdrop}
-        title={movie.title}
-        tagline={movie.tagline}
-      />
+    <>
+      <div className='space-y-3'>
+        {episodes.map(episode => {
+          const isWatched = watchedEpisodes.has(episode.episode_number)
+          const rating = getEpisodeRating(episode)
+          
+          return (
+            <div
+              key={episode.id}
+              className='rounded-lg p-4 transition-all duration-200'
+              style={{
+                background: isWatched 
+                  ? 'linear-gradient(135deg, rgba(74,222,128,0.08) 0%, rgba(34,211,238,0.05) 100%)'
+                  : 'rgba(22,27,34,0.6)',
+                border: '1px solid',
+                borderColor: isWatched ? 'rgba(74,222,128,0.2)' : 'rgba(48,54,61,0.8)'
+              }}
+            >
+              <div className='flex items-start gap-4'>
+                {/* Episode Number */}
+                <div
+                  className='flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg'
+                  style={{
+                    background: isWatched 
+                      ? 'linear-gradient(135deg, rgba(74,222,128,0.2) 0%, rgba(34,211,238,0.15) 100%)'
+                      : 'rgba(48,54,61,0.8)',
+                    color: isWatched ? '#4ade80' : '#8b949e'
+                  }}
+                >
+                  {episode.episode_number}
+                </div>
 
-      <div className='max-w-6xl mx-auto mt-8 px-4 space-y-12'>
-        <div className='flex flex-col md:flex-row gap-8'>
-          <div className='flex-shrink-0 flex flex-col gap-3'>
-            <img
-              src={movie.poster}
-              alt={movie.title}
-              className='w-full md:w-56 rounded-xl object-cover shadow-lg'
-            />
-            
-            <button
-              onClick={() => setShowDiaryModal(true)}
-              className='w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30 hover:from-orange-400/30 hover:to-orange-500/30'>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                <path d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20' />
-                <path d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z' />
-              </svg>
-              Log to Diary
-            </button>
-            
-            <button
-              onClick={toggleWatchlist}
-              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-                watchlisted
-                  ? 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-red-400/10 hover:text-red-400 hover:border-red-400/30'
-                  : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-green-400/10 hover:text-green-400 hover:border-green-400/30'
-              }`}>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                <path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />
-              </svg>
-              {watchlisted ? 'Saved to Watchlist' : 'Add to Watchlist'}
-            </button>
-          </div>
+                {/* Episode Info */}
+                <div className='flex-1 min-w-0'>
+                  <div className='flex items-start justify-between gap-4 mb-2'>
+                    <div className='flex-1'>
+                      <h4 className='font-semibold mb-1' style={{ color: '#e6edf3' }}>
+                        {episode.name}
+                      </h4>
+                      {episode.air_date && (
+                        <p className='text-xs mb-2' style={{ color: '#8b949e' }}>
+                          Aired: {new Date(episode.air_date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      )}
+                    </div>
 
-          <div className='flex-1 space-y-6'>
-            <MovieInfo movie={movie} />
+                    {/* Log Episode Button */}
+                    <button
+                      onClick={() => isWatched ? openDiaryModal(episode) : toggleEpisodeWatched(episode)}
+                      className='flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200'
+                      style={{
+                        background: isWatched 
+                          ? 'linear-gradient(135deg, rgba(74,222,128,0.2) 0%, rgba(34,211,238,0.15) 100%)'
+                          : 'rgba(251,146,60,0.2)',
+                        color: isWatched ? '#4ade80' : '#fb923c',
+                        border: '1px solid',
+                        borderColor: isWatched ? 'rgba(74,222,128,0.3)' : 'rgba(251,146,60,0.3)'
+                      }}
+                    >
+                      {isWatched ? '✓ Logged' : 'Log Episode'}
+                    </button>
+                  </div>
 
-            <div className='border-t border-white/10 pt-5'>
-              <p className='text-sm text-gray-400 uppercase tracking-widest mb-3 font-semibold'>
-                Your Rating
-              </p>
-              <StarRating
-                movieId={String(movie.id)}
-                currentRating={userRating}
-                onRate={rate}
-                onUnrate={unrate}
-              />
+                  {episode.overview && (
+                    <p className='text-sm mb-3 line-clamp-2' style={{ color: '#8b949e' }}>
+                      {episode.overview}
+                    </p>
+                  )}
+
+                  {/* Rating Display */}
+                  {rating > 0 && (
+                    <div className='flex items-center gap-2'>
+                      <span className='text-sm font-semibold' style={{ color: getRatingColor(rating) }}>
+                        ★ {rating.toFixed(1)}/10
+                      </span>
+                      <span className='text-xs' style={{ color: '#8b949e' }}>
+                        {RATING_LABELS[Math.round(rating * 2) / 2] || ''}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {movie.trailerKey && (
-          <section>
-            <h2 className='text-2xl font-bold mb-4'>Trailer</h2>
-            <MovieTrailer
-              trailerUrl={`https://www.youtube.com/embed/${movie.trailerKey}`}
-              title={movie.title}
-            />
-          </section>
-        )}
-
-        {movie.cast.length > 0 && (
-          <section>
-            <h2 className='text-2xl font-bold mb-4'>Cast</h2>
-            <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4'>
-              {movie.cast.map(actor => (
-                <CastCard key={actor.id} actor={actor} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {movie.similar.length > 0 && (
-          <SimilarMovies movies={movie.similar} />
-        )}
+          )
+        })}
       </div>
 
       {/* Diary Modal */}
-      {showDiaryModal && (
+      {showDiaryModal && selectedEpisode && (
         <div className='fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4'
           onClick={() => setShowDiaryModal(false)}>
           <div className='bg-gradient-to-br from-[#1a1f2e] to-[#161b22] rounded-2xl p-6 max-w-lg w-full border border-white/10 max-h-[90vh] overflow-y-auto'
             onClick={e => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-6'>
               <h3 className='text-2xl font-black text-white flex items-center gap-2'>
-                <span className='text-3xl'>📔</span>
-                Log to Diary
+                <span className='text-3xl'>📺</span>
+                Log Episode
               </h3>
               <button
                 onClick={() => setShowDiaryModal(false)}
@@ -257,11 +279,17 @@ function MovieDetails() {
               </button>
             </div>
 
+            <div className='mb-4 p-3 bg-white/5 rounded-lg border border-white/10'>
+              <p className='text-sm font-semibold text-white'>
+                S{season.season_number}E{selectedEpisode.episode_number}: {selectedEpisode.name}
+              </p>
+            </div>
+
             <div className='space-y-5'>
               {/* Date */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-2'>
-                  📅 When did you watch it?
+                  📅 When did you watch this episode?
                 </label>
                 <DatePicker
                   value={diaryDate}
@@ -347,7 +375,7 @@ function MovieDetails() {
                 <textarea
                   value={publicReview}
                   onChange={e => setPublicReview(e.target.value)}
-                  placeholder='Share your thoughts with the community...'
+                  placeholder='Share your thoughts about this episode...'
                   rows={3}
                   className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 outline-none transition-all resize-none'
                 />
@@ -383,17 +411,17 @@ function MovieDetails() {
                   onClick={handleAddToDiary}
                   className='flex-1 px-4 py-2.5 rounded-lg font-bold text-sm transition-all'
                   style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
-                  Add to Diary
+                  Log Episode
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
-    </MainLayout>
+    </>
   )
 }
 
-export default MovieDetails
+export default EpisodeList
 
 // Made with Bob

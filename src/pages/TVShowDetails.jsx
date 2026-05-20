@@ -5,11 +5,11 @@ import Loader from '../components/common/Loader'
 import DatePicker from '../components/common/DatePicker'
 import MainLayout from '../layouts/MainLayout'
 import MovieBanner from '../components/movie/MovieBanner'
-import MovieInfo from '../components/movie/MovieInfo'
 import MovieTrailer from '../components/movie/MovieTrailer'
 import SimilarMovies from '../components/movie/SimilarMovies'
 import StarRating from '../components/movie/StarRating'
-import movieService from '../services/movieService'
+import SeasonList from '../components/tv/SeasonList'
+import tvShowService from '../services/tvShowService'
 import useRatings from '../hooks/useRatings'
 import {
   addToWatchlist,
@@ -17,6 +17,7 @@ import {
   removeFromWatchlist,
 } from '../utils/watchlistStorage'
 import { addDiaryEntry } from '../utils/diaryStorage'
+import seriesStatusStorage, { WATCH_STATUS } from '../utils/seriesStatusStorage'
 
 const RATING_LABELS = {
   0.5: 'Why was this even made?',
@@ -49,9 +50,9 @@ function getRatingColor(value) {
   return '#22d3ee'
 }
 
-function MovieDetails() {
+function TVShowDetails() {
   const { id } = useParams()
-  const [movie, setMovie] = useState(null)
+  const [show, setShow] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [watchlisted, setWatchlisted] = useState(false)
@@ -61,50 +62,94 @@ function MovieDetails() {
   const [draggingRating, setDraggingRating] = useState(null)
   const [publicReview, setPublicReview] = useState('')
   const [privateNote, setPrivateNote] = useState('')
+  const [watchStatus, setWatchStatus] = useState(WATCH_STATUS.NOT_STARTED)
+  const [showStatusMenu, setShowStatusMenu] = useState(false)
   const { getRating, rate, unrate } = useRatings()
 
   useEffect(() => {
     setLoading(true)
     setError('')
 
-    movieService
-      .getMovieDetails(id)
+    tvShowService
+      .getTVShowDetails(id)
       .then(data => {
-        setMovie(data)
+        setShow(data)
         setWatchlisted(isInWatchlist(data.id))
+        setWatchStatus(seriesStatusStorage.getStatus(data.id))
       })
-      .catch(() => setError('Could not load movie details.'))
+      .catch(() => setError('Could not load TV show details.'))
       .finally(() => setLoading(false))
   }, [id])
 
+  const handleStatusChange = (newStatus) => {
+    if (!show) return
+    seriesStatusStorage.setStatus(show.id, newStatus)
+    setWatchStatus(newStatus)
+    setShowStatusMenu(false)
+    
+    // If user selects "Currently Watching", scroll to episodes section
+    if (newStatus === WATCH_STATUS.WATCHING) {
+      setTimeout(() => {
+        const episodesSection = document.getElementById('episodes-section')
+        if (episodesSection) {
+          episodesSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
+    }
+  }
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case WATCH_STATUS.WATCHING:
+        return 'Currently Watching'
+      case WATCH_STATUS.COMPLETED:
+        return 'Completed'
+      default:
+        return 'Not Started'
+    }
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case WATCH_STATUS.WATCHING:
+        return { bg: 'rgba(251,191,36,0.1)', text: '#fbbf24', border: 'rgba(251,191,36,0.3)' }
+      case WATCH_STATUS.COMPLETED:
+        return { bg: 'rgba(74,222,128,0.1)', text: '#4ade80', border: 'rgba(74,222,128,0.3)' }
+      default:
+        return { bg: 'rgba(107,114,128,0.1)', text: '#6b7280', border: 'rgba(107,114,128,0.3)' }
+    }
+  }
+
   const toggleWatchlist = () => {
-    if (!movie) return
+    if (!show) return
 
     if (watchlisted) {
-      removeFromWatchlist(movie.id)
+      removeFromWatchlist(show.id)
       setWatchlisted(false)
     } else {
       addToWatchlist({
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        rating: movie.rating,
-        releaseDate: movie.releaseDate,
+        id: show.id,
+        title: show.title,
+        poster: show.poster,
+        rating: show.rating,
+        releaseDate: show.releaseDate,
+        mediaType: 'tv',
       })
       setWatchlisted(true)
     }
   }
 
   const handleAddToDiary = () => {
-    if (!movie) return
+    if (!show) return
     
     addDiaryEntry(
       {
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        rating: movie.rating,
-        releaseDate: movie.releaseDate,
+        id: show.id,
+        title: show.title,
+        poster: show.poster,
+        rating: show.rating,
+        releaseDate: show.releaseDate,
+        mediaType: 'tv',
       },
       diaryDate,
       diaryRating,
@@ -138,46 +183,77 @@ function MovieDetails() {
     )
   }
 
-  if (error || !movie) {
+  if (error || !show) {
     return (
       <MainLayout>
         <p className='text-red-400 text-center py-20'>
-          {error || 'Movie not found.'}
+          {error || 'TV show not found.'}
         </p>
       </MainLayout>
     )
   }
 
-  const userRating = getRating(String(movie.id))
+  const userRating = getRating(String(show.id))
   const displayRating = draggingRating ?? diaryRating
   const ratingColor = displayRating ? getRatingColor(displayRating) : '#6b7280'
 
   return (
     <MainLayout>
       <MovieBanner
-        backdrop={movie.backdrop}
-        title={movie.title}
-        tagline={movie.tagline}
+        backdrop={show.backdrop}
+        title={show.title}
+        tagline={show.tagline}
       />
 
       <div className='max-w-6xl mx-auto mt-8 px-4 space-y-12'>
         <div className='flex flex-col md:flex-row gap-8'>
           <div className='flex-shrink-0 flex flex-col gap-3'>
             <img
-              src={movie.poster}
-              alt={movie.title}
+              src={show.poster}
+              alt={show.title}
               className='w-full md:w-56 rounded-xl object-cover shadow-lg'
             />
             
-            <button
-              onClick={() => setShowDiaryModal(true)}
-              className='w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30 hover:from-orange-400/30 hover:to-orange-500/30'>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                <path d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20' />
-                <path d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z' />
-              </svg>
-              Log to Diary
-            </button>
+            {/* Watch Status Button */}
+            <div className='relative'>
+              <button
+                onClick={() => setShowStatusMenu(!showStatusMenu)}
+                className='w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all border'
+                style={{
+                  background: getStatusColor(watchStatus).bg,
+                  color: getStatusColor(watchStatus).text,
+                  borderColor: getStatusColor(watchStatus).border
+                }}>
+                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                  <path d='M9 11l3 3L22 4' />
+                  <path d='M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11' />
+                </svg>
+                {getStatusLabel(watchStatus)}
+              </button>
+              
+              {showStatusMenu && (
+                <div className='absolute top-full left-0 right-0 mt-2 bg-[#1a1f2e] border border-white/10 rounded-lg overflow-hidden shadow-xl z-10'>
+                  <button
+                    onClick={() => handleStatusChange(WATCH_STATUS.NOT_STARTED)}
+                    className='w-full px-4 py-2.5 text-left text-sm hover:bg-white/5 transition-colors'
+                    style={{ color: '#6b7280' }}>
+                    Not Started
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange(WATCH_STATUS.WATCHING)}
+                    className='w-full px-4 py-2.5 text-left text-sm hover:bg-white/5 transition-colors'
+                    style={{ color: '#fbbf24' }}>
+                    Currently Watching
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange(WATCH_STATUS.COMPLETED)}
+                    className='w-full px-4 py-2.5 text-left text-sm hover:bg-white/5 transition-colors'
+                    style={{ color: '#4ade80' }}>
+                    Completed
+                  </button>
+                </div>
+              )}
+            </div>
             
             <button
               onClick={toggleWatchlist}
@@ -194,14 +270,81 @@ function MovieDetails() {
           </div>
 
           <div className='flex-1 space-y-6'>
-            <MovieInfo movie={movie} />
+            {/* TMDB Rating Display (no label) */}
+            {show.rating && (
+              <div className='bg-gradient-to-br from-[#1a1f2e] to-[#161b22] rounded-xl p-5 border border-white/10'>
+                <div className='flex items-end gap-3'>
+                  <span
+                    className='text-5xl font-black leading-none tabular-nums'
+                    style={{ color: getRatingColor(Number(show.rating)) }}>
+                    {Number(show.rating).toFixed(1)}
+                  </span>
+                  <span className='text-gray-500 text-2xl mb-1'>/10</span>
+                  <span className='text-xs text-gray-500 mb-2 ml-2'>TMDB</span>
+                </div>
+              </div>
+            )}
 
+            {/* TV Show Info */}
+            <div>
+              <div className='flex flex-wrap gap-2 mb-4'>
+                {show.genres.map(genre => (
+                  <span
+                    key={genre}
+                    className='px-3 py-1 rounded-full text-xs font-semibold'
+                    style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.2)' }}>
+                    {genre}
+                  </span>
+                ))}
+              </div>
+
+              <p className='text-gray-300 leading-relaxed mb-4'>{show.overview}</p>
+
+              <div className='grid grid-cols-2 gap-4 text-sm'>
+                <div>
+                  <span className='text-gray-500'>First Air Date:</span>
+                  <p className='text-white font-semibold'>{show.releaseDate}</p>
+                </div>
+                <div>
+                  <span className='text-gray-500'>Status:</span>
+                  <p className='text-white font-semibold'>{show.status}</p>
+                </div>
+                <div>
+                  <span className='text-gray-500'>Seasons:</span>
+                  <p className='text-white font-semibold'>{show.numberOfSeasons}</p>
+                </div>
+                <div>
+                  <span className='text-gray-500'>Episodes:</span>
+                  <p className='text-white font-semibold'>{show.numberOfEpisodes}</p>
+                </div>
+                {show.episodeRunTime && (
+                  <div>
+                    <span className='text-gray-500'>Episode Runtime:</span>
+                    <p className='text-white font-semibold'>{show.episodeRunTime} min</p>
+                  </div>
+                )}
+                {show.networks.length > 0 && (
+                  <div>
+                    <span className='text-gray-500'>Network:</span>
+                    <p className='text-white font-semibold'>{show.networks.join(', ')}</p>
+                  </div>
+                )}
+                {show.createdBy.length > 0 && (
+                  <div className='col-span-2'>
+                    <span className='text-gray-500'>Created By:</span>
+                    <p className='text-white font-semibold'>{show.createdBy.join(', ')}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Your Overall Rating */}
             <div className='border-t border-white/10 pt-5'>
               <p className='text-sm text-gray-400 uppercase tracking-widest mb-3 font-semibold'>
-                Your Rating
+                Your Overall Rating
               </p>
               <StarRating
-                movieId={String(movie.id)}
+                movieId={String(show.id)}
                 currentRating={userRating}
                 onRate={rate}
                 onUnrate={unrate}
@@ -210,29 +353,53 @@ function MovieDetails() {
           </div>
         </div>
 
-        {movie.trailerKey && (
+        {show.trailerKey && (
           <section>
             <h2 className='text-2xl font-bold mb-4'>Trailer</h2>
             <MovieTrailer
-              trailerUrl={`https://www.youtube.com/embed/${movie.trailerKey}`}
-              title={movie.title}
+              trailerUrl={`https://www.youtube.com/embed/${show.trailerKey}`}
+              title={show.title}
             />
           </section>
         )}
 
-        {movie.cast.length > 0 && (
+        {/* Seasons & Episodes */}
+        {show.seasons && show.seasons.length > 0 && (
+          <section id='episodes-section'>
+            <div className='mb-6'>
+              <h2 className='text-2xl font-black mb-2' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
+                📺 Seasons & Episodes
+              </h2>
+              <p className='text-sm' style={{ color: '#8b949e' }}>
+                {watchStatus === WATCH_STATUS.WATCHING
+                  ? 'Log your episodes as you watch them'
+                  : 'Track your progress episode by episode'}
+              </p>
+            </div>
+            <SeasonList
+              show={{
+                id: show.id,
+                name: show.title,
+                poster_path: show.poster
+              }}
+              seasons={show.seasons}
+            />
+          </section>
+        )}
+
+        {show.cast.length > 0 && (
           <section>
             <h2 className='text-2xl font-bold mb-4'>Cast</h2>
             <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4'>
-              {movie.cast.map(actor => (
+              {show.cast.map(actor => (
                 <CastCard key={actor.id} actor={actor} />
               ))}
             </div>
           </section>
         )}
 
-        {movie.similar.length > 0 && (
-          <SimilarMovies movies={movie.similar} />
+        {show.similar.length > 0 && (
+          <SimilarMovies movies={show.similar} title="Similar TV Shows" />
         )}
       </div>
 
@@ -244,8 +411,8 @@ function MovieDetails() {
             onClick={e => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-6'>
               <h3 className='text-2xl font-black text-white flex items-center gap-2'>
-                <span className='text-3xl'>📔</span>
-                Log to Diary
+                <span className='text-3xl'>📺</span>
+                Log Episode
               </h3>
               <button
                 onClick={() => setShowDiaryModal(false)}
@@ -261,7 +428,7 @@ function MovieDetails() {
               {/* Date */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-2'>
-                  📅 When did you watch it?
+                  📅 When did you watch this episode?
                 </label>
                 <DatePicker
                   value={diaryDate}
@@ -383,7 +550,7 @@ function MovieDetails() {
                   onClick={handleAddToDiary}
                   className='flex-1 px-4 py-2.5 rounded-lg font-bold text-sm transition-all'
                   style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
-                  Add to Diary
+                  Log Episode
                 </button>
               </div>
             </div>
@@ -394,6 +561,6 @@ function MovieDetails() {
   )
 }
 
-export default MovieDetails
+export default TVShowDetails
 
 // Made with Bob

@@ -1,12 +1,14 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 
 import Home from '../pages/Home'
+import TVShows from '../pages/TVShows'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Search from '../pages/Search'
 import Watchlist from '../pages/Watchlist'
 import Diary from '../pages/Diary'
 import MovieDetails from '../pages/MovieDetails'
+import TVShowDetails from '../pages/TVShowDetails'
 import ActorProfile from '../pages/ActorProfile'
 import LetterboxdImport from '../pages/LetterboxdImport'
 import Quiz from '../pages/Quiz'
@@ -18,6 +20,8 @@ function AppRoutes() {
       <Routes>
         <Route path='/' element={<Home />} />
 
+        <Route path='/tv-shows' element={<TVShows />} />
+
         <Route path='/login' element={<Login />} />
 
         <Route path='/register' element={<Register />} />
@@ -25,6 +29,8 @@ function AppRoutes() {
         <Route path='/search' element={<Search />} />
 
         <Route path='/movie/:id' element={<MovieDetails />} />
+
+        <Route path='/tv/:id' element={<TVShowDetails />} />
 
         <Route path='/actor/:id' element={<ActorProfile />} />
 

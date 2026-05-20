@@ -2,7 +2,7 @@ import { useState } from 'react'
 import MainLayout from '../layouts/MainLayout'
 import GuessTheMovie from '../components/quiz/GuessTheMovie'
 import GuessTheActor from '../components/quiz/GuessTheActor'
-import OscarTrivia from '../components/quiz/OscarTrivia'
+import OscarTriviaHard from '../components/quiz/OscarTriviaHard'
 
 function Quiz() {
   const [selectedMode, setSelectedMode] = useState(null)
@@ -27,11 +27,11 @@ function Quiz() {
     },
     {
       id: 'oscar',
-      title: 'Oscar Trivia',
+      title: 'Oscar Trivia Challenge',
       icon: '🏆',
-      description: 'Test your knowledge of award-winning films',
+      description: 'Hard trivia about Academy Awards - no images, pure knowledge!',
       color: 'from-yellow-500 to-orange-500',
-      component: OscarTrivia,
+      component: OscarTriviaHard,
     },
   ]
 
