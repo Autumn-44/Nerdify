@@ -118,6 +118,20 @@ function Navbar() {
               Quiz
             </Link>
 
+            <Link
+              to='/settings'
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+                isActive('/settings')
+                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}>
+              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                <circle cx='12' cy='12' r='3' />
+                <path d='M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m-2 2l-4.2 4.2M23 12h-6m-6 0H5m13.2 5.2l-4.2-4.2m-2-2l-4.2-4.2' />
+              </svg>
+              Settings
+            </Link>
+
             <div className='w-px h-6 bg-white/10 mx-2' />
 
             {user ? (

@@ -4,6 +4,7 @@ import Home from '../pages/Home'
 import TVShows from '../pages/TVShows'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import ForgotPassword from '../pages/ForgotPassword'
 import Search from '../pages/Search'
 import Watchlist from '../pages/Watchlist'
 import Diary from '../pages/Diary'
@@ -25,6 +26,8 @@ function AppRoutes() {
         <Route path='/login' element={<Login />} />
 
         <Route path='/register' element={<Register />} />
+
+        <Route path='/forgot-password' element={<ForgotPassword />} />
 
         <Route path='/search' element={<Search />} />
 

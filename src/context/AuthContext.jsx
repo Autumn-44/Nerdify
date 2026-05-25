@@ -1,114 +1,47 @@
 import { createContext, useEffect, useState } from 'react'
+import { onAuthStateChange } from '../services/authService'
 
 export const AuthContext = createContext()
 
-const readJson = (key, fallback) => {
-  try {
-    const value = localStorage.getItem(key)
-    return value ? JSON.parse(value) : fallback
-  } catch {
-    localStorage.removeItem(key)
-    return fallback
-  }
-}
-
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedUser = readJson('user', null)
+    // Subscribe to Firebase auth state changes
+    const unsubscribe = onAuthStateChange((firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+          emailVerified: firebaseUser.emailVerified,
+        })
+      } else {
+        // User is signed out
+        setUser(null)
+      }
+      setLoading(false)
+    })
 
-    if (savedUser) {
-      setUser(savedUser)
-    }
+    // Cleanup subscription on unmount
+    return () => unsubscribe()
   }, [])
 
-  const signup = (name, email, password) => {
-    const users = readJson('users', [])
-
-    const existingUser = users.find(
-      user => user.email === email
-    )
-
-    if (existingUser) {
-      return {
-        success: false,
-        message: 'User already exists',
-      }
-    }
-
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      password,
-    }
-
-    users.push(newUser)
-
-    localStorage.setItem(
-      'users',
-      JSON.stringify(users)
-    )
-
-    localStorage.setItem(
-      'user',
-      JSON.stringify(newUser)
-    )
-
-    setUser(newUser)
-
-    return {
-      success: true,
-    }
-  }
-
-  const login = (email, password) => {
-    const users = readJson('users', [])
-
-    const foundUser = users.find(
-      user =>
-        user.email === email &&
-        user.password === password
-    )
-
-    if (!foundUser) {
-      return {
-        success: false,
-        message: 'Invalid credentials',
-      }
-    }
-
-    localStorage.setItem(
-      'user',
-      JSON.stringify(foundUser)
-    )
-
-    setUser(foundUser)
-
-    return {
-      success: true,
-    }
-  }
-
-  const logout = () => {
-    localStorage.removeItem('user')
-
-    setUser(null)
+  const value = {
+    user,
+    loading,
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        signup,
-        login,
-        logout,
-      }}
-    >
-      {children}
+    <AuthContext.Provider value={value}>
+      {!loading && children}
     </AuthContext.Provider>
   )
 }
 
 export default AuthProvider
+
+// Made with Bob
