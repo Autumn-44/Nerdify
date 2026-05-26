@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { register, loginWithGoogle } from '../services/authService'
 import MainLayout from '../layouts/MainLayout'
+import { checkConfig } from '../config/firebase-test'
 
 function Register() {
   const navigate = useNavigate()
@@ -13,6 +14,14 @@ function Register() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    // Check Firebase configuration on component mount
+    const isConfigValid = checkConfig()
+    if (!isConfigValid) {
+      setError('Firebase configuration is missing. Please check your .env file and restart the dev server.')
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,16 +42,23 @@ function Register() {
 
     setLoading(true)
 
-    const result = await register(email, password, name)
+    try {
+      const result = await register(email, password, name)
+      console.log('Registration result:', result)
 
-    if (result.success) {
-      setMessage(result.message)
-      // Redirect to home after 2 seconds
-      setTimeout(() => {
-        navigate('/')
-      }, 2000)
-    } else {
-      setError(result.message)
+      if (result.success) {
+        setMessage(result.message)
+        // Redirect to home after 2 seconds
+        setTimeout(() => {
+          navigate('/')
+        }, 2000)
+      } else {
+        console.error('Registration error:', result.error, result.message)
+        setError(result.message || 'An unexpected error occurred. Please try again.')
+      }
+    } catch (err) {
+      console.error('Unexpected registration error:', err)
+      setError('An unexpected error occurred. Please check the console and try again.')
     }
 
     setLoading(false)

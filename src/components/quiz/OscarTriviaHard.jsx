@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-// Hard Oscar trivia questions - text only, no images, mainstream movies
+// Hard Oscar trivia questions - Updated with comprehensive set
 const OSCAR_QUESTIONS = [
   {
     question: "Which film won Best Picture at the 2020 Academy Awards, becoming the first non-English language film to win this category?",
@@ -63,14 +63,14 @@ const OSCAR_QUESTIONS = [
     difficulty: "medium"
   },
   {
-    question: "Which film won Best Picture in 2020 (ceremony held in 2021)?",
+    question: "Which film won Best Picture in 2021?",
     options: ["Nomadland", "The Trial of the Chicago 7", "Mank", "Promising Young Woman"],
     correctAnswer: "Nomadland",
     difficulty: "medium"
   },
   {
     question: "Who is the oldest person to win an acting Oscar?",
-    options: ["Christopher Plummer", "Jessica Tandy", "Anthony Hopkins", "Katharine Hepburn"],
+    options: ["Anthony Hopkins", "Christopher Plummer", "Jessica Tandy", "Katharine Hepburn"],
     correctAnswer: "Anthony Hopkins",
     difficulty: "hard"
   },
@@ -121,6 +121,36 @@ const OSCAR_QUESTIONS = [
     options: ["The Godfather Part II", "The Lord of the Rings: The Return of the King", "The French Connection II", "Rocky II"],
     correctAnswer: "The Godfather Part II",
     difficulty: "medium"
+  },
+  {
+    question: "Which film won Best Picture in 2018?",
+    options: ["The Shape of Water", "Three Billboards Outside Ebbing, Missouri", "Get Out", "Dunkirk"],
+    correctAnswer: "The Shape of Water",
+    difficulty: "medium"
+  },
+  {
+    question: "Who won Best Actor for playing the Joker?",
+    options: ["Joaquin Phoenix", "Heath Ledger", "Jack Nicholson", "Jared Leto"],
+    correctAnswer: "Joaquin Phoenix",
+    difficulty: "easy"
+  },
+  {
+    question: "Which film won Best Picture in 2017?",
+    options: ["Moonlight", "La La Land", "Manchester by the Sea", "Arrival"],
+    correctAnswer: "Moonlight",
+    difficulty: "medium"
+  },
+  {
+    question: "How many Oscars did 'Titanic' win?",
+    options: ["11", "10", "12", "9"],
+    correctAnswer: "11",
+    difficulty: "medium"
+  },
+  {
+    question: "Which actress has won the most Best Actress Oscars?",
+    options: ["Katharine Hepburn", "Meryl Streep", "Bette Davis", "Ingrid Bergman"],
+    correctAnswer: "Katharine Hepburn",
+    difficulty: "medium"
   }
 ]
 
@@ -136,7 +166,7 @@ function OscarTriviaHard({ onComplete }) {
   const [timerActive, setTimerActive] = useState(true)
 
   useEffect(() => {
-    // Shuffle and select 10 random questions
+    // Shuffle and select 10 random questions on mount
     const shuffled = [...OSCAR_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 10)
     setQuestions(shuffled)
   }, [])

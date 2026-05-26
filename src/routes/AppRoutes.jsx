@@ -13,6 +13,9 @@ import TVShowDetails from '../pages/TVShowDetails'
 import ActorProfile from '../pages/ActorProfile'
 import LetterboxdImport from '../pages/LetterboxdImport'
 import Quiz from '../pages/Quiz'
+import Settings from '../pages/Settings'
+import Profile from '../pages/Profile'
+import Favorites from '../pages/Favorites'
 import ProtectedRoute from '../components/common/ProtectedRoute'
 
 function AppRoutes() {
@@ -58,6 +61,33 @@ function AppRoutes() {
         <Route path='/import' element={<LetterboxdImport />} />
 
         <Route path='/quiz' element={<Quiz />} />
+
+        <Route
+          path='/settings'
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/favorites'
+          element={
+            <ProtectedRoute>
+              <Favorites />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </HashRouter>
   )

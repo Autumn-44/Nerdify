@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const location = useLocation()
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
   const isActive = (path) => location.pathname === path
 
@@ -118,46 +119,71 @@ function Navbar() {
               Quiz
             </Link>
 
-            <Link
-              to='/settings'
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/settings')
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
-              }`}>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                <circle cx='12' cy='12' r='3' />
-                <path d='M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m-2 2l-4.2 4.2M23 12h-6m-6 0H5m13.2 5.2l-4.2-4.2m-2-2l-4.2-4.2' />
-              </svg>
-              Settings
-            </Link>
-
             <div className='w-px h-6 bg-white/10 mx-2' />
 
             {user ? (
-              <>
-                <div className='flex items-center gap-2 px-3 py-2 rounded-lg' 
-                  style={{ background: 'rgba(251, 146, 60, 0.1)', border: '1px solid rgba(251, 146, 60, 0.2)' }}>
+              <div className='relative'>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className='flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-all duration-200'
+                >
                   <div className='w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm'
                     style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
-                    {user.name.charAt(0).toUpperCase()}
+                    {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
                   </div>
-                  <span className='text-sm font-semibold text-orange-400'>
-                    {user.name}
-                  </span>
-                </div>
-
-                <button
-                  onClick={logout}
-                  className='px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 text-red-400 hover:bg-red-400/10 border border-transparent hover:border-red-400/30'>
-                  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
-                    <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
-                    <polyline points='16 17 21 12 16 7' />
-                    <line x1='21' y1='12' x2='9' y2='12' />
+                  <svg
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showUserMenu ? 'rotate-180' : ''}`}
+                  >
+                    <polyline points='6 9 12 15 18 9' />
                   </svg>
-                  Logout
                 </button>
-              </>
+
+                {showUserMenu && (
+                  <>
+                    <div
+                      className='fixed inset-0 z-10'
+                      onClick={() => setShowUserMenu(false)}
+                    />
+                    <div className='absolute right-0 mt-2 w-56 bg-[#1c1f26] rounded-lg shadow-xl border border-white/10 py-2 z-20'>
+                      <div className='px-4 py-3 border-b border-white/10'>
+                        <p className='text-sm font-semibold text-white truncate'>
+                          {user.displayName || 'User'}
+                        </p>
+                        <p className='text-xs text-gray-400 truncate'>{user.email}</p>
+                      </div>
+                      
+                      <Link
+                        to='/profile'
+                        onClick={() => setShowUserMenu(false)}
+                        className='flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 transition-colors'
+                      >
+                        <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                          <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+                          <circle cx='12' cy='7' r='4' />
+                        </svg>
+                        Profile
+                      </Link>
+
+                      <Link
+                        to='/settings'
+                        onClick={() => setShowUserMenu(false)}
+                        className='flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 transition-colors'
+                      >
+                        <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
+                          <circle cx='12' cy='12' r='3' />
+                          <path d='M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m-2 2l-4.2 4.2M23 12h-6m-6 0H5m13.2 5.2l-4.2-4.2m-2-2l-4.2-4.2' />
+                        </svg>
+                        Settings
+                      </Link>
+
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <>
                 <Link 

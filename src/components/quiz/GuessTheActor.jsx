@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import quizService from '../../services/quizService'
+import { getRandomHollywoodActor } from '../../data/hollywoodActors'
 
 function GuessTheActor({ onComplete }) {
   const [actor, setActor] = useState(null)
@@ -17,10 +18,15 @@ function GuessTheActor({ onComplete }) {
 
   const loadActor = async () => {
     setLoading(true)
-    const actors = await quizService.getRandomActors(1)
-    if (actors.length > 0) {
-      const actorDetails = await quizService.getActorWithFilmography(actors[0].id)
+    // Get a random Hollywood actor from our curated list
+    const hollywoodActor = getRandomHollywoodActor()
+    const actorDetails = await quizService.getActorWithFilmography(hollywoodActor.id)
+    if (actorDetails) {
       setActor(actorDetails)
+    } else {
+      // If failed, try another one
+      loadActor()
+      return
     }
     setLoading(false)
   }
@@ -30,18 +36,23 @@ function GuessTheActor({ onComplete }) {
     
     const facts = []
     
-    // Fact 1: Known for department
-    facts.push({
-      icon: '🎭',
-      text: `This person is known for ${actor.knownFor.toLowerCase()}`
-    })
-    
-    // Fact 2: Top movies
+    // Fact 1: Top 2 movies (not too revealing)
     if (actor.movies.length > 0) {
-      const topMovies = actor.movies.slice(0, 3).map(m => m.title).join(', ')
+      const topMovies = actor.movies.slice(0, 2).map(m => m.title).join(', ')
       facts.push({
         icon: '🎬',
-        text: `Appeared in: ${topMovies}`
+        text: `Starred in: ${topMovies}`
+      })
+    }
+    
+    // Fact 2: Age/Birth year
+    if (actor.birthday) {
+      const birthYear = actor.birthday.split('-')[0]
+      const currentYear = new Date().getFullYear()
+      const age = currentYear - parseInt(birthYear)
+      facts.push({
+        icon: '🎂',
+        text: `${age} years old (Born in ${birthYear})`
       })
     }
     
@@ -53,30 +64,21 @@ function GuessTheActor({ onComplete }) {
       })
     }
     
-    // Fact 4: More movies
-    if (actor.movies.length > 3) {
-      const moreMovies = actor.movies.slice(3, 6).map(m => m.title).join(', ')
-      facts.push({
-        icon: '🎥',
-        text: `Also starred in: ${moreMovies}`
-      })
-    }
-    
-    // Fact 5: Character roles
+    // Fact 4: Character role
     if (actor.movies.length > 0) {
-      const roles = actor.movies.slice(0, 2).map(m => `${m.character} in ${m.title}`).join(', ')
+      const role = actor.movies[0]
       facts.push({
         icon: '🎪',
-        text: `Played: ${roles}`
+        text: `Played ${role.character} in ${role.title}`
       })
     }
     
-    // Fact 6: Birthday
-    if (actor.birthday) {
-      const year = actor.birthday.split('-')[0]
+    // Fact 5: Famous movies
+    if (actor.movies.length > 2) {
+      const famousMovies = actor.movies.slice(2, 5).map(m => m.title).join(', ')
       facts.push({
-        icon: '🎂',
-        text: `Born in ${year}`
+        icon: '🎞️',
+        text: `Famous for: ${famousMovies}`
       })
     }
     

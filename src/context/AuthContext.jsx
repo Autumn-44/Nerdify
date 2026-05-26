@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
-import { onAuthStateChange } from '../services/authService'
+import { onAuthStateChange, logout as authLogout } from '../services/authService'
 
 export const AuthContext = createContext()
 
@@ -30,9 +30,18 @@ function AuthProvider({ children }) {
     return () => unsubscribe()
   }, [])
 
+  const logout = async () => {
+    const result = await authLogout()
+    if (result.success) {
+      setUser(null)
+    }
+    return result
+  }
+
   const value = {
     user,
     loading,
+    logout,
   }
 
   return (

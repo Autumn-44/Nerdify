@@ -10,6 +10,7 @@ function ActorProfile() {
   const [actor, setActor] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isBioExpanded, setIsBioExpanded] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -118,9 +119,26 @@ function ActorProfile() {
                     <span>📖</span>
                     Biography
                   </h3>
-                  <p className='text-gray-300 leading-relaxed text-sm line-clamp-6'>
-                    {actor.biography}
-                  </p>
+                  <div className={`overflow-hidden transition-all duration-300 ${!isBioExpanded ? 'max-h-32' : 'max-h-none'}`}>
+                    <p className='text-gray-300 leading-relaxed text-sm whitespace-pre-line'>
+                      {actor.biography}
+                    </p>
+                  </div>
+                  {actor.biography.length > 400 && (
+                    <button
+                      onClick={() => setIsBioExpanded(!isBioExpanded)}
+                      className='mt-3 text-orange-400 hover:text-orange-300 text-sm font-semibold transition-colors flex items-center gap-1'>
+                      {isBioExpanded ? 'Show less' : 'Read more'}
+                      <svg
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        className={`w-4 h-4 transition-transform ${isBioExpanded ? 'rotate-180' : ''}`}>
+                        <polyline points='6 9 12 15 18 9' />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               )}
             </div>

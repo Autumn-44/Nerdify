@@ -96,6 +96,8 @@ function Calendar({ selectedDate, onDateSelect, entriesMap }) {
 }
 
 function DiaryEntry({ entry, onDelete }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  
   // Determine the correct link based on media type
   const getLink = () => {
     if (entry.movie.mediaType === 'episode') {
@@ -138,26 +140,50 @@ function DiaryEntry({ entry, onDelete }) {
             </button>
           </div>
           
-          <div className='flex items-center gap-3 mb-3 text-sm'>
-            <span className='text-gray-400'>
-              📅 {new Date(entry.watchedDate).toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                year: 'numeric' 
-              })}
-            </span>
-            {entry.rating && (
-              <span className='flex items-center gap-1 text-orange-400 font-semibold'>
-                <svg viewBox='0 0 24 24' fill='currentColor' className='w-4 h-4'>
-                  <path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' />
-                </svg>
-                {entry.rating}/10
+          <div className='space-y-2 mb-3'>
+            <div className='flex items-center gap-3 text-sm'>
+              <span className='text-gray-400'>
+                📅 Watched: {new Date(entry.watchedDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
               </span>
+              {entry.rating && (
+                <span className='flex items-center gap-1 text-orange-400 font-semibold'>
+                  <svg viewBox='0 0 24 24' fill='currentColor' className='w-4 h-4'>
+                    <path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' />
+                  </svg>
+                  {entry.rating}/10
+                </span>
+              )}
+            </div>
+            
+            {entry.createdAt && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className='flex items-center gap-2 text-xs text-gray-500 hover:text-gray-300 transition-colors'>
+                <span>📝 Logged on {new Date(entry.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}</span>
+                <svg
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                  <polyline points='6 9 12 15 18 9' />
+                </svg>
+              </button>
             )}
           </div>
           
-          {entry.publicReview && (
-            <div className='mb-3 p-3 bg-green-400/5 border border-green-400/20 rounded-lg'>
+          {entry.publicReview && isExpanded && (
+            <div className='mb-3 p-3 bg-green-400/5 border border-green-400/20 rounded-lg animate-fadeIn'>
               <div className='flex items-center gap-2 mb-1'>
                 <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-green-400'>
                   <path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
@@ -173,8 +199,8 @@ function DiaryEntry({ entry, onDelete }) {
             </div>
           )}
           
-          {entry.privateNote && (
-            <div className='p-3 bg-purple-400/5 border border-purple-400/20 rounded-lg'>
+          {entry.privateNote && isExpanded && (
+            <div className='p-3 bg-purple-400/5 border border-purple-400/20 rounded-lg animate-fadeIn'>
               <div className='flex items-center gap-2 mb-1'>
                 <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-purple-400'>
                   <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />

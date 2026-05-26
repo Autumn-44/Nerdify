@@ -11,9 +11,15 @@ export const getWatchlist = () => {
 export const addToWatchlist = movie => {
   const list = getWatchlist()
   if (!list.find(m => m.id === movie.id)) {
-    list.unshift(movie)
+    const movieWithDate = {
+      ...movie,
+      addedDate: new Date().toISOString()
+    }
+    list.unshift(movieWithDate)
     localStorage.setItem(KEY, JSON.stringify(list))
+    return true // Return true to indicate success
   }
+  return false // Return false if already in watchlist
 }
 
 export const removeFromWatchlist = movieId => {

@@ -61,7 +61,15 @@ function MovieDetails() {
   const [draggingRating, setDraggingRating] = useState(null)
   const [publicReview, setPublicReview] = useState('')
   const [privateNote, setPrivateNote] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const { getRating, rate, unrate } = useRatings()
+  
+  const showNotification = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 3000)
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -83,15 +91,19 @@ function MovieDetails() {
     if (watchlisted) {
       removeFromWatchlist(movie.id)
       setWatchlisted(false)
+      showNotification('Removed from watchlist')
     } else {
-      addToWatchlist({
+      const added = addToWatchlist({
         id: movie.id,
         title: movie.title,
         poster: movie.poster,
         rating: movie.rating,
         releaseDate: movie.releaseDate,
       })
-      setWatchlisted(true)
+      if (added) {
+        setWatchlisted(true)
+        showNotification('Added to watchlist! 🎬')
+      }
     }
   }
 
@@ -117,7 +129,7 @@ function MovieDetails() {
     setDraggingRating(null)
     setPublicReview('')
     setPrivateNote('')
-    alert('Added to diary!')
+    showNotification('Successfully logged to diary! 📔')
   }
 
   const handleRatingChange = (e) => {
@@ -387,6 +399,19 @@ function MovieDetails() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className='fixed bottom-8 right-8 z-50 animate-slide-up'>
+          <div className='bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-green-400/30'>
+            <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-6 h-6 flex-shrink-0'>
+              <path d='M22 11.08V12a10 10 0 1 1-5.93-9.14' />
+              <polyline points='22 4 12 14.01 9 11.01' />
+            </svg>
+            <span className='font-semibold'>{toastMessage}</span>
           </div>
         </div>
       )}
