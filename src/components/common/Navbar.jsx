@@ -38,7 +38,7 @@ function Navbar() {
           </Link>
 
           {/* Navigation Links */}
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-6'>
             <Link 
               to='/' 
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
@@ -131,9 +131,19 @@ function Navbar() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className='flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-all duration-200'
                 >
-                  <div className='w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm'
-                    style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
-                    {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                  <div className='w-8 h-8 rounded-full overflow-hidden border-2 border-orange-500/30 hover:border-orange-500/50 transition-all duration-200'>
+                    {user.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt='Profile'
+                        className='w-full h-full object-cover'
+                      />
+                    ) : (
+                      <div className='w-full h-full flex items-center justify-center font-bold text-sm'
+                        style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
+                        {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <svg
                     viewBox='0 0 24 24'

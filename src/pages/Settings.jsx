@@ -7,11 +7,19 @@ import letterboxdService from '../services/letterboxdService'
 import { saveRating } from '../utils/ratingsStorage'
 import { addDiaryEntry } from '../utils/diaryStorage'
 import { addToWatchlist } from '../utils/watchlistStorage'
+import { updateProfilePhoto } from '../services/authService'
 
 function Settings() {
   const navigate = useNavigate()
-  const { user, logout } = useContext(AuthContext)
+  const { user, logout, refreshUser } = useContext(AuthContext)
   const [activeTab, setActiveTab] = useState('account')
+  
+  // Profile Photo State
+  const [photoFile, setPhotoFile] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(null)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [photoMessage, setPhotoMessage] = useState('')
+  const [photoError, setPhotoError] = useState('')
   
   // Letterboxd Import State
   const [file, setFile] = useState(null)
@@ -25,6 +33,63 @@ function Settings() {
     if (result.success) {
       navigate('/login')
     }
+  }
+
+  const handlePhotoChange = (e) => {
+    const selectedFile = e.target.files[0]
+    if (selectedFile) {
+      if (!selectedFile.type.startsWith('image/')) {
+        setPhotoError('Please select a valid image file')
+        setPhotoFile(null)
+        setPhotoPreview(null)
+        return
+      }
+      
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setPhotoError('Image size must be less than 5MB')
+        setPhotoFile(null)
+        setPhotoPreview(null)
+        return
+      }
+
+      setPhotoFile(selectedFile)
+      setPhotoError('')
+      setPhotoMessage('')
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result)
+      }
+      reader.readAsDataURL(selectedFile)
+    }
+  }
+
+  const handlePhotoUpload = async () => {
+    if (!photoFile) {
+      setPhotoError('Please select a photo first')
+      return
+    }
+
+    setUploadingPhoto(true)
+    setPhotoError('')
+    setPhotoMessage('')
+
+    const result = await updateProfilePhoto(photoFile)
+    
+    if (result.success) {
+      setPhotoMessage(result.message)
+      setPhotoFile(null)
+      setPhotoPreview(null)
+      // Refresh user data in context
+      if (refreshUser) {
+        await refreshUser()
+      }
+    } else {
+      setPhotoError(result.message)
+    }
+
+    setUploadingPhoto(false)
   }
 
   const handleFileChange = (e) => {
@@ -165,6 +230,80 @@ function Settings() {
         {/* Account Tab */}
         {activeTab === 'account' && (
           <div className='space-y-6'>
+            {/* Profile Photo Section */}
+            <div className='bg-[#1c1f26] p-6 rounded-xl'>
+              <h2 className='text-2xl font-bold mb-4'>Profile Photo</h2>
+              
+              <div className='flex flex-col md:flex-row gap-6 items-start'>
+                {/* Current Photo */}
+                <div className='flex flex-col items-center gap-3'>
+                  <div className='w-32 h-32 rounded-full overflow-hidden border-4 border-orange-500/30'>
+                    {user?.photoURL ? (
+                      <img
+                        src={user.photoURL}
+                        alt='Profile'
+                        className='w-full h-full object-cover'
+                      />
+                    ) : (
+                      <div className='w-full h-full flex items-center justify-center font-bold text-4xl'
+                        style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
+                        {(user?.displayName || user?.email || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <p className='text-sm text-gray-400'>Current Photo</p>
+                </div>
+
+                {/* Upload Section */}
+                <div className='flex-1 space-y-4'>
+                  {photoPreview && (
+                    <div className='flex flex-col items-center gap-3'>
+                      <div className='w-32 h-32 rounded-full overflow-hidden border-4 border-green-500/30'>
+                        <img
+                          src={photoPreview}
+                          alt='Preview'
+                          className='w-full h-full object-cover'
+                        />
+                      </div>
+                      <p className='text-sm text-green-400'>Preview</p>
+                    </div>
+                  )}
+
+                  {photoError && (
+                    <div className='bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg'>
+                      {photoError}
+                    </div>
+                  )}
+
+                  {photoMessage && (
+                    <div className='bg-green-500/10 border border-green-500 text-green-400 p-3 rounded-lg'>
+                      {photoMessage}
+                    </div>
+                  )}
+
+                  <div>
+                    <label className='block text-sm font-semibold mb-2'>Select New Photo</label>
+                    <input
+                      type='file'
+                      accept='image/*'
+                      onChange={handlePhotoChange}
+                      disabled={uploadingPhoto}
+                      className='w-full bg-[#14181c] p-3 rounded-lg outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-500 file:text-white file:font-semibold hover:file:bg-orange-600 file:cursor-pointer disabled:opacity-50'
+                    />
+                    <p className='text-xs text-gray-400 mt-2'>Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
+                  </div>
+
+                  <button
+                    onClick={handlePhotoUpload}
+                    disabled={!photoFile || uploadingPhoto}
+                    className='w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                  >
+                    {uploadingPhoto ? '⏳ Uploading...' : '📸 Upload Photo'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div className='bg-[#1c1f26] p-6 rounded-xl'>
               <h2 className='text-2xl font-bold mb-4'>Account Information</h2>
               <div className='space-y-4'>

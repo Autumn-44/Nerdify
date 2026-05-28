@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
+import { compressImage } from '../utils/imageCompression'
 
 /**
  * Register a new user with email and password
@@ -193,6 +194,94 @@ export const getCurrentUser = () => {
 }
 
 /**
+ * Update user profile photo using localStorage (no Firebase Storage needed)
+ * @param {File} file - Image file to upload
+ * @returns {Promise<Object>} Success status with photoURL
+ */
+export const updateProfilePhoto = async (file) => {
+  try {
+    const user = auth.currentUser
+    if (!user) {
+      return {
+        success: false,
+        message: 'No user is currently signed in.',
+      }
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return {
+        success: false,
+        message: 'Please select a valid image file.',
+      }
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return {
+        success: false,
+        message: 'Image size must be less than 5MB.',
+      }
+    }
+
+    // Compress image to reduce size
+    const compressedBlob = await compressImage(file, 200, 200, 0.8)
+    
+    // Convert blob to base64 data URL
+    const photoDataURL = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result)
+      reader.onerror = reject
+      reader.readAsDataURL(compressedBlob)
+    })
+
+    // Store photo in localStorage with user ID as key
+    const storageKey = `profile_photo_${user.uid}`
+    localStorage.setItem(storageKey, photoDataURL)
+
+    // Update Firebase profile with a marker indicating photo is in localStorage
+    const photoURL = `local:${user.uid}`
+    await updateProfile(user, {
+      photoURL: photoURL,
+    })
+    
+    // Force reload user to get updated data
+    await user.reload()
+
+    return {
+      success: true,
+      photoURL: photoDataURL, // Return actual data URL for immediate display
+      message: 'Profile photo updated successfully!',
+    }
+  } catch (error) {
+    console.error('Profile photo update error:', error)
+    
+    let message = 'Failed to update profile photo. Please try again.'
+    
+    if (error.message && error.message.includes('compress')) {
+      message = 'Failed to process image. Please try a different photo.'
+    }
+    
+    return {
+      success: false,
+      error: error.code || error.message,
+      message: message,
+    }
+  }
+}
+
+/**
+ * Get user profile photo from localStorage
+ * @param {string} uid - User ID
+ * @returns {string|null} Photo data URL or null
+ */
+export const getProfilePhoto = (uid) => {
+  if (!uid) return null
+  const storageKey = `profile_photo_${uid}`
+  return localStorage.getItem(storageKey)
+}
+
+/**
  * Convert Firebase error codes to user-friendly messages
  * @param {string} errorCode - Firebase error code
  * @returns {string} User-friendly error message
@@ -225,6 +314,8 @@ export default {
   resendVerificationEmail,
   onAuthStateChange,
   getCurrentUser,
+  updateProfilePhoto,
+  getProfilePhoto,
 }
 
 // Made with Bob
