@@ -20,14 +20,12 @@ function Navbar() {
         <div className='flex justify-between items-center'>
           {/* Logo */}
           <Link to='/' className='flex items-center gap-3 group'>
-            <div className='relative w-14 h-12 rounded-[18px] p-[3px] bg-gradient-to-br from-green-400 via-cyan-400 to-purple-500 shadow-lg shadow-cyan-400/20 transition-all duration-300 group-hover:shadow-purple-500/25 group-hover:scale-105 overflow-hidden'>
-              <div className='h-full w-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden'>
+            <div className='relative h-12 w-12 rounded-2xl shadow-lg shadow-cyan-400/20 transition-all duration-300 group-hover:shadow-purple-500/25 group-hover:scale-105 overflow-hidden'>
               <img
-                src='/nerdofylogo.png'
+                src='/logo.png'
                 alt='Nerdify logo'
-                className='h-10 w-12 object-contain'
+                className='h-full w-full object-cover'
               />
-              </div>
             </div>
             <div className='flex flex-col'>
               <span className='text-2xl font-black bg-gradient-to-r from-green-400 via-cyan-400 to-purple-500 bg-clip-text text-transparent'>
