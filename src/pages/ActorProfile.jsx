@@ -10,7 +10,6 @@ function ActorProfile() {
   const [actor, setActor] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [isBioExpanded, setIsBioExpanded] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -51,9 +50,9 @@ function ActorProfile() {
     <MainLayout>
       {/* Actor Header */}
       <div className='relative mb-12'>
-        <div className='absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1117]/50 to-[#0d1117]' />
+        <div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-[#0d1117]/50 to-[#0d1117]' />
         
-        <div className='max-w-6xl mx-auto px-4 py-12'>
+        <div className='relative z-10 max-w-6xl mx-auto px-4 py-12'>
           <div className='flex flex-col md:flex-row gap-8 items-start'>
             {/* Profile Image */}
             <div className='flex-shrink-0'>
@@ -119,26 +118,9 @@ function ActorProfile() {
                     <span>📖</span>
                     Biography
                   </h3>
-                  <div className={`overflow-hidden transition-all duration-300 ${!isBioExpanded ? 'max-h-32' : 'max-h-none'}`}>
-                    <p className='text-gray-300 leading-relaxed text-sm whitespace-pre-line'>
-                      {actor.biography}
-                    </p>
-                  </div>
-                  {actor.biography.length > 400 && (
-                    <button
-                      onClick={() => setIsBioExpanded(!isBioExpanded)}
-                      className='mt-3 text-orange-400 hover:text-orange-300 text-sm font-semibold transition-colors flex items-center gap-1'>
-                      {isBioExpanded ? 'Show less' : 'Read more'}
-                      <svg
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        className={`w-4 h-4 transition-transform ${isBioExpanded ? 'rotate-180' : ''}`}>
-                        <polyline points='6 9 12 15 18 9' />
-                      </svg>
-                    </button>
-                  )}
+                  <p className='text-gray-300 leading-relaxed text-sm md:text-base whitespace-pre-line'>
+                    {actor.biography}
+                  </p>
                 </div>
               )}
             </div>

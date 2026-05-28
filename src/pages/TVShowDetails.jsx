@@ -380,7 +380,8 @@ function TVShowDetails() {
               show={{
                 id: show.id,
                 name: show.title,
-                poster_path: show.poster
+                poster_path: show.poster,
+                numberOfEpisodes: show.numberOfEpisodes,
               }}
               seasons={show.seasons}
             />

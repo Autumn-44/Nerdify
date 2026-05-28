@@ -22,6 +22,12 @@ export const addDiaryEntry = (movie, watchedDate, rating = null, publicReview = 
       rating: movie.rating,
       releaseDate: movie.releaseDate,
       mediaType: movie.mediaType || 'movie', // Preserve mediaType (movie, tv, episode)
+      showId: movie.showId,
+      showTitle: movie.showTitle,
+      seasonNumber: movie.seasonNumber,
+      episodeNumber: movie.episodeNumber,
+      seasonEpisodeCount: movie.seasonEpisodeCount,
+      showEpisodeCount: movie.showEpisodeCount,
     },
     watchedDate: watchedDate, // Format: YYYY-MM-DD
     rating: rating, // User's rating (1-10)

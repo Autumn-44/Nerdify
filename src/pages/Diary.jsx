@@ -219,11 +219,79 @@ function DiaryEntry({ entry, onDelete }) {
   )
 }
 
+const getEpisodeParts = (entry) => {
+  const movie = entry.movie || {}
+  const idMatch = String(movie.id || '').match(/^(.+)-s(\d+)e(\d+)$/i)
+
+  return {
+    showId: movie.showId ?? idMatch?.[1],
+    seasonNumber: Number(movie.seasonNumber ?? idMatch?.[2]),
+    episodeNumber: Number(movie.episodeNumber ?? idMatch?.[3]),
+    seasonEpisodeCount: Number(movie.seasonEpisodeCount || 0),
+  }
+}
+
+const getCompletedSeriesCount = (entries) => {
+  const watchedSeries = new Set(
+    entries
+      .filter(e => e.movie?.mediaType === 'tv')
+      .map(e => String(e.movie.id))
+  )
+  const seasonsByShow = {}
+
+  entries
+    .filter(e => e.movie?.mediaType === 'episode')
+    .forEach(entry => {
+      const { showId, seasonNumber, episodeNumber, seasonEpisodeCount } = getEpisodeParts(entry)
+      if (!showId || !seasonNumber || !episodeNumber) return
+
+      const showKey = String(showId)
+      const seasonKey = String(seasonNumber)
+
+      if (!seasonsByShow[showKey]) seasonsByShow[showKey] = {}
+      if (!seasonsByShow[showKey][seasonKey]) {
+        seasonsByShow[showKey][seasonKey] = {
+          expectedCount: seasonEpisodeCount,
+          episodes: new Set(),
+        }
+      }
+
+      seasonsByShow[showKey][seasonKey].episodes.add(episodeNumber)
+      if (seasonEpisodeCount > 0) {
+        seasonsByShow[showKey][seasonKey].expectedCount = seasonEpisodeCount
+      }
+    })
+
+  Object.entries(seasonsByShow).forEach(([showId, seasons]) => {
+    const hasCompletedSeason = Object.values(seasons).some(season => {
+      const watchedCount = season.episodes.size
+      const highestEpisode = Math.max(...season.episodes)
+      const hasWatchedFromStart = Array.from(
+        { length: highestEpisode },
+        (_, index) => season.episodes.has(index + 1)
+      ).every(Boolean)
+
+      if (season.expectedCount > 0) {
+        return watchedCount >= season.expectedCount
+      }
+
+      return watchedCount > 1 && watchedCount === highestEpisode && hasWatchedFromStart
+    })
+
+    if (hasCompletedSeason) {
+      watchedSeries.add(showId)
+    }
+  })
+
+  return watchedSeries.size
+}
+
 function Diary() {
   const [entries, setEntries] = useState([])
   const [selectedDate, setSelectedDate] = useState(null)
   const [filteredEntries, setFilteredEntries] = useState([])
   const [entriesMap, setEntriesMap] = useState({})
+  const [entryToDelete, setEntryToDelete] = useState(null)
 
   useEffect(() => {
     loadEntries()
@@ -271,25 +339,42 @@ function Diary() {
   }
 
   const handleDelete = (entryId) => {
-    if (confirm('Are you sure you want to delete this diary entry?')) {
-      deleteDiaryEntry(entryId)
-      loadEntries()
-      if (selectedDate) {
-        const filtered = entries.filter(e => e.watchedDate === selectedDate && e.id !== entryId)
-        setFilteredEntries(filtered)
-      }
+    const entry = entries.find(e => e.id === entryId)
+    setEntryToDelete(entry || { id: entryId })
+  }
+
+  const confirmDelete = () => {
+    if (!entryToDelete) return
+
+    deleteDiaryEntry(entryToDelete.id)
+    const updatedEntries = getDiaryEntries()
+    setEntries(updatedEntries)
+
+    const map = {}
+    updatedEntries.forEach(entry => {
+      map[entry.watchedDate] = (map[entry.watchedDate] || 0) + 1
+    })
+    setEntriesMap(map)
+
+    if (selectedDate) {
+      setFilteredEntries(updatedEntries.filter(e => e.watchedDate === selectedDate))
+    } else {
+      setFilteredEntries(updatedEntries)
     }
+
+    setEntryToDelete(null)
   }
 
   const totalMovies = entries.length
   const films = entries.filter(e => !e.movie.mediaType || e.movie.mediaType === 'movie')
   const series = entries.filter(e => e.movie.mediaType === 'tv')
   const episodes = entries.filter(e => e.movie.mediaType === 'episode')
+  const completedSeriesCount = getCompletedSeriesCount(entries)
   
   console.log('Diary entries breakdown:', {
     total: entries.length,
     films: films.length,
-    series: series.length,
+    series: completedSeriesCount,
     episodes: episodes.length,
     sample: entries.slice(0, 3).map(e => ({ title: e.movie.title, mediaType: e.movie.mediaType }))
   })
@@ -298,11 +383,9 @@ function Diary() {
     new Date(e.watchedDate).getFullYear() === new Date().getFullYear()
   ).length
   
-  // Count unique series (not episodes)
-  const thisYearSeriesSet = new Set()
-  series.filter(e => new Date(e.watchedDate).getFullYear() === new Date().getFullYear())
-    .forEach(e => thisYearSeriesSet.add(e.movie.id))
-  const thisYearSeries = thisYearSeriesSet.size
+  const thisYearSeries = getCompletedSeriesCount(
+    entries.filter(e => new Date(e.watchedDate).getFullYear() === new Date().getFullYear())
+  )
   
   const thisYearEpisodes = episodes.filter(e =>
     new Date(e.watchedDate).getFullYear() === new Date().getFullYear()
@@ -329,7 +412,7 @@ function Diary() {
           <div className='text-sm text-gray-400'>Films Logged</div>
         </div>
         <div className='bg-gradient-to-br from-cyan-400/10 to-cyan-500/10 rounded-xl p-6 border border-cyan-400/20'>
-          <div className='text-3xl font-black text-cyan-400 mb-1'>{series.length}</div>
+          <div className='text-3xl font-black text-cyan-400 mb-1'>{completedSeriesCount}</div>
           <div className='text-sm text-gray-400'>Series Logged</div>
         </div>
         <div className='bg-gradient-to-br from-blue-400/10 to-blue-500/10 rounded-xl p-6 border border-blue-400/20'>
@@ -428,6 +511,42 @@ function Diary() {
           )}
         </div>
       </div>
+
+      {entryToDelete && (
+        <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4'>
+          <div className='w-full max-w-md rounded-2xl border border-red-400/20 bg-gradient-to-br from-[#1a1f2e] to-[#161b22] p-6 shadow-2xl shadow-black/50'>
+            <div className='mb-5 flex items-start gap-4'>
+              <div className='flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-red-400/10 text-red-400 ring-1 ring-red-400/20'>
+                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='h-5 w-5'>
+                  <polyline points='3 6 5 6 21 6' />
+                  <path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' />
+                </svg>
+              </div>
+              <div>
+                <h3 className='text-xl font-black text-white'>Delete diary entry?</h3>
+                <p className='mt-2 text-sm leading-relaxed text-gray-400'>
+                  {entryToDelete.movie?.title
+                    ? `Remove "${entryToDelete.movie.title}" from your diary? This action cannot be undone.`
+                    : 'Remove this diary entry? This action cannot be undone.'}
+                </p>
+              </div>
+            </div>
+
+            <div className='flex justify-end gap-3'>
+              <button
+                onClick={() => setEntryToDelete(null)}
+                className='rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-white/10 hover:text-white'>
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className='rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-red-500/20 transition-colors hover:bg-red-400'>
+                Delete Entry
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MainLayout>
   )
 }

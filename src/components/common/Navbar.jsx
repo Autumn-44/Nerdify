@@ -18,13 +18,19 @@ function Navbar() {
       }}>
       <div className='max-w-7xl mx-auto px-6 md:px-10 py-4'>
         <div className='flex justify-between items-center'>
-          {/* Logo - Simplified */}
+          {/* Logo */}
           <Link to='/' className='flex items-center gap-3 group'>
-            <div className='relative w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-105'>
-              <span className='text-2xl'>🎬</span>
+            <div className='relative w-14 h-12 rounded-[18px] p-[3px] bg-gradient-to-br from-green-400 via-cyan-400 to-purple-500 shadow-lg shadow-cyan-400/20 transition-all duration-300 group-hover:shadow-purple-500/25 group-hover:scale-105 overflow-hidden'>
+              <div className='h-full w-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden'>
+              <img
+                src='/nerdofylogo.png'
+                alt='Nerdify logo'
+                className='h-10 w-12 object-contain'
+              />
+              </div>
             </div>
             <div className='flex flex-col'>
-              <span className='text-2xl font-black bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent'>
+              <span className='text-2xl font-black bg-gradient-to-r from-green-400 via-cyan-400 to-purple-500 bg-clip-text text-transparent'>
                 Nerdify
               </span>
               <span className='text-[10px] font-semibold text-gray-500 -mt-1 tracking-wider'>
