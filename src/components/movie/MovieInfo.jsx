@@ -53,7 +53,7 @@ function MovieInfo({ movie }) {
           </span>
         )}
         {movie.status && (
-          <span className='text-sm bg-green-500/20 text-green-400 px-2 py-0.5 rounded'>
+          <span className='text-sm bg-primary-500/20 text-primary-400 px-2 py-0.5 rounded'>
             {movie.status}
           </span>
         )}

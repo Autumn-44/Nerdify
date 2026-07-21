@@ -20,7 +20,7 @@ function WatchlistCard({ movie, onRemove }) {
 
       <div className='flex-1 min-w-0'>
         <Link to={`/movie/${movie.id}`}>
-          <h3 className='font-bold text-lg hover:text-green-400 transition-colors truncate'>
+          <h3 className='font-bold text-lg hover:text-primary-400 transition-colors truncate'>
             {movie.title}
           </h3>
         </Link>
@@ -29,7 +29,7 @@ function WatchlistCard({ movie, onRemove }) {
         <div className='flex items-center gap-3 mt-2'>
           <span className='text-yellow-400 text-sm'>⭐ {movie.rating}</span>
           {userRating && (
-            <span className='text-green-400 text-sm font-semibold'>
+            <span className='text-primary-400 text-sm font-semibold'>
               Your rating: {userRating}/10
             </span>
           )}
@@ -78,7 +78,7 @@ function Watchlist() {
             <p className='text-gray-500 mb-6'>Add films from their detail pages to track what you want to watch.</p>
             <Link
               to='/search'
-              className='inline-flex px-5 py-2.5 bg-green-400 text-black font-bold rounded-lg hover:bg-green-300 transition-colors'
+              className='inline-flex px-5 py-2.5 bg-primary-400 text-black font-bold rounded-lg hover:bg-primary-300 transition-colors'
             >
               Find something to watch
             </Link>

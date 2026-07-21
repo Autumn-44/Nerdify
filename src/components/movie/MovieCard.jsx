@@ -9,7 +9,7 @@ function MovieCard({ movie }) {
 
   return (
     <Link to={linkPath} className='group block'>
-      <div className='relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#1a1f2e] to-[#161b22] transition-all duration-300 group-hover:scale-[1.05] group-hover:shadow-2xl group-hover:shadow-green-500/20 border border-white/5 group-hover:border-green-400/30'>
+      <div className='relative rounded-2xl overflow-hidden bg-gradient-to-br from-dark-850 to-dark-900 transition-all duration-300 group-hover:scale-[1.05] group-hover:shadow-2xl group-hover:shadow-primary-500/20 border border-white/5 group-hover:border-primary-400/30'>
         <div className='relative aspect-[2/3] overflow-hidden'>
           <img
             src={movie.poster}
@@ -20,7 +20,7 @@ function MovieCard({ movie }) {
           {/* Gradient Overlay on Hover */}
           <div
             className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4'
-            style={{ background: 'linear-gradient(to top, rgba(13,17,23,0.98) 0%, rgba(13,17,23,0.7) 50%, transparent 100%)' }}
+            style={{ background: 'linear-gradient(to top, rgba(15,23,42,0.98) 0%, rgba(15,23,42,0.7) 50%, transparent 100%)' }}
           >
             <h2 className='font-bold text-sm leading-tight text-white mb-2 line-clamp-2'>
               {movie.title}
@@ -34,14 +34,14 @@ function MovieCard({ movie }) {
               </span>
               {userRating && (
                 <span className='text-xs font-bold px-2 py-0.5 rounded-full backdrop-blur-sm'
-                  style={{ background: 'rgba(74,222,128,0.2)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.3)' }}>
+                  style={{ background: 'rgba(251,191,36,0.2)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' }}>
                   You: {userRating}/10
                 </span>
               )}
             </div>
             <div className='flex items-center gap-2'>
               <span className='text-xs font-bold px-3 py-1.5 rounded-lg backdrop-blur-sm flex items-center gap-1.5'
-                style={{ background: 'linear-gradient(135deg, #4ade80 0%, #22d3ee 100%)', color: '#0d1117' }}>
+                style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#0f172a' }}>
                 <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' className='w-3.5 h-3.5'>
                   <circle cx='12' cy='12' r='10' />
                   <polygon points='10 8 16 12 10 16 10 8' />
@@ -60,7 +60,7 @@ function MovieCard({ movie }) {
 
         {/* Bottom Info (Always Visible) */}
         <div className='p-3 group-hover:opacity-0 transition-opacity duration-200'>
-          <h2 className='font-bold text-sm truncate mb-1' style={{ color: '#e6edf3' }}>
+          <h2 className='font-bold text-sm truncate mb-1' style={{ color: '#f8fafc' }}>
             {movie.title}
           </h2>
           <div className='flex items-center justify-between'>

@@ -42,7 +42,7 @@ function TVShowSection({ title, subtitle, icon, shows, loading, error, onLoadMor
           </h2>
           <p className='text-sm mt-1' style={{ color: '#8b949e' }}>{subtitle}</p>
         </div>
-        <div className='flex-1 h-px' style={{ background: 'linear-gradient(to right, rgba(74,222,128,0.2), transparent)' }} />
+        <div className='flex-1 h-px' style={{ background: 'linear-gradient(to right, rgba(251, 191, 36,0.2), transparent)' }} />
       </div>
       <MovieGrid movies={shows} />
       {loading && (
@@ -201,13 +201,13 @@ function TVShows() {
         {/* Animated Background */}
         <div className='absolute inset-0 pointer-events-none'>
           <div className='absolute inset-0' style={{
-            background: 'radial-gradient(ellipse 80% 70% at 30% 40%, rgba(168,85,247,0.08) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse 80% 70% at 30% 40%, rgba(217, 119, 6,0.08) 0%, transparent 60%)',
           }} />
           <div className='absolute top-0 right-0 w-[700px] h-[700px] opacity-40' style={{
-            background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(245, 158, 11,0.08) 0%, transparent 70%)',
           }} />
           <div className='absolute bottom-0 left-0 w-[500px] h-[500px] opacity-30' style={{
-            background: 'radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(251, 191, 36,0.06) 0%, transparent 70%)',
           }} />
         </div>
 
@@ -215,12 +215,12 @@ function TVShows() {
           {/* Badge */}
           <div className='inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-8 border backdrop-blur-sm'
             style={{ 
-              color: '#a855f7', 
-              background: 'rgba(168,85,247,0.1)', 
-              borderColor: 'rgba(168,85,247,0.3)',
-              boxShadow: '0 0 20px rgba(168,85,247,0.1)'
+              color: '#d97706', 
+              background: 'rgba(217, 119, 6,0.1)', 
+              borderColor: 'rgba(217, 119, 6,0.3)',
+              boxShadow: '0 0 20px rgba(217, 119, 6,0.1)'
             }}>
-            <span className='w-2 h-2 rounded-full bg-purple-400 animate-pulse' />
+            <span className='w-2 h-2 rounded-full bg-accent-400 animate-pulse' />
             Binge-Worthy Series & Shows
           </div>
 
@@ -229,7 +229,7 @@ function TVShows() {
             style={{ letterSpacing: '-0.04em', color: '#e6edf3' }}>
             TV Shows{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #a855f7 0%, #22d3ee 50%, #4ade80 100%)',
+              background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
@@ -247,7 +247,7 @@ function TVShows() {
             <Link
               to='/search'
               className='group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl font-bold text-base transition-all duration-200 shadow-lg hover:shadow-xl'
-              style={{ background: 'linear-gradient(135deg, #a855f7 0%, #22d3ee 100%)', color: '#0d1117' }}>
+              style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)', color: '#0d1117' }}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' className='w-5 h-5 group-hover:scale-110 transition-transform'>
                 <circle cx='11' cy='11' r='8' />
                 <line x1='21' y1='21' x2='16.65' y2='16.65' />
@@ -264,8 +264,8 @@ function TVShows() {
               className='group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl font-bold text-base border-2 transition-all duration-200 backdrop-blur-sm'
               style={{ 
                 color: '#e6edf3', 
-                borderColor: 'rgba(168,85,247,0.3)', 
-                background: 'rgba(168,85,247,0.05)' 
+                borderColor: 'rgba(217, 119, 6,0.3)', 
+                background: 'rgba(217, 119, 6,0.05)' 
               }}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' className='w-5 h-5 group-hover:scale-110 transition-transform'>
                 <path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />
@@ -277,11 +277,11 @@ function TVShows() {
           {/* Stats */}
           <div className='flex flex-wrap gap-8 mt-12 pt-8 border-t' style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
             <div>
-              <div className='text-3xl font-black' style={{ color: '#a855f7' }}>1000+</div>
+              <div className='text-3xl font-black' style={{ color: '#d97706' }}>1000+</div>
               <div className='text-sm' style={{ color: '#8b949e' }}>TV Shows</div>
             </div>
             <div>
-              <div className='text-3xl font-black' style={{ color: '#22d3ee' }}>Daily</div>
+              <div className='text-3xl font-black' style={{ color: '#f59e0b' }}>Daily</div>
               <div className='text-sm' style={{ color: '#8b949e' }}>Updates</div>
             </div>
           </div>

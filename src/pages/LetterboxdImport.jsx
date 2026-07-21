@@ -174,8 +174,8 @@ function LetterboxdImport() {
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-lg file:border-0
                 file:text-sm file:font-semibold
-                file:bg-green-400/20 file:text-green-400
-                hover:file:bg-green-400/30
+                file:bg-primary-400/20 file:text-primary-400
+                hover:file:bg-primary-400/30
                 file:cursor-pointer cursor-pointer
                 disabled:opacity-50 disabled:cursor-not-allowed'
             />
@@ -200,7 +200,7 @@ function LetterboxdImport() {
               </div>
               <div className='w-full bg-gray-700 rounded-full h-2'>
                 <div
-                  className='bg-green-400 h-2 rounded-full transition-all duration-300'
+                  className='bg-primary-400 h-2 rounded-full transition-all duration-300'
                   style={{ width: `${progress.percentage}%` }}
                 />
               </div>
@@ -211,12 +211,12 @@ function LetterboxdImport() {
           )}
 
           {result && (
-            <div className='mb-6 p-6 bg-green-500/10 border border-green-500/20 rounded-lg'>
-              <h3 className='text-xl font-bold text-green-400 mb-4'>✅ Import Complete!</h3>
+            <div className='mb-6 p-6 bg-primary-500/10 border border-primary-500/20 rounded-lg'>
+              <h3 className='text-xl font-bold text-primary-400 mb-4'>✅ Import Complete!</h3>
               <div className='space-y-2 text-gray-300'>
                 <p>Type: <span className='text-white font-semibold'>{getTypeLabel(result.type)}</span></p>
                 <p>Total: <span className='text-white font-semibold'>{result.stats.total}</span></p>
-                <p>Successfully imported: <span className='text-green-400 font-semibold'>{result.stats.successful}</span></p>
+                <p>Successfully imported: <span className='text-primary-400 font-semibold'>{result.stats.successful}</span></p>
                 {result.stats.failed > 0 && (
                   <p>Failed to match: <span className='text-yellow-400 font-semibold'>{result.stats.failed}</span></p>
                 )}
@@ -243,7 +243,7 @@ function LetterboxdImport() {
                     else if (result.type === 'watchlist') navigate('/watchlist')
                     else navigate('/diary')
                   }}
-                  className='px-6 py-2 bg-green-400 text-black font-semibold rounded-lg hover:bg-green-300 transition-colors'
+                  className='px-6 py-2 bg-primary-400 text-black font-semibold rounded-lg hover:bg-primary-300 transition-colors'
                 >
                   View Imported Data
                 </button>
@@ -265,7 +265,7 @@ function LetterboxdImport() {
             <button
               onClick={handleImport}
               disabled={!file || importing}
-              className='w-full py-3 bg-green-400 text-black font-bold rounded-lg hover:bg-green-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+              className='w-full py-3 bg-primary-400 text-black font-bold rounded-lg hover:bg-primary-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {importing ? 'Importing...' : 'Start Import'}
             </button>

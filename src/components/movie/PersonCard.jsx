@@ -4,7 +4,7 @@ function PersonCard({ person }) {
   return (
     <Link
       to={`/actor/${person.id}`}
-      className='group block bg-[#1c1f26] rounded-lg overflow-hidden hover:ring-2 hover:ring-green-400/50 transition-all duration-300'
+      className='group block bg-[#1c1f26] rounded-lg overflow-hidden hover:ring-2 hover:ring-primary-400/50 transition-all duration-300'
     >
       <div className='aspect-[2/3] bg-gray-800 relative overflow-hidden'>
         {person.profileImage ? (
@@ -33,7 +33,7 @@ function PersonCard({ person }) {
       </div>
 
       <div className='p-3'>
-        <h3 className='font-semibold text-white group-hover:text-green-400 transition-colors line-clamp-1'>
+        <h3 className='font-semibold text-white group-hover:text-primary-400 transition-colors line-clamp-1'>
           {person.name}
         </h3>
         

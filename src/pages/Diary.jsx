@@ -183,15 +183,15 @@ function DiaryEntry({ entry, onDelete }) {
           </div>
           
           {entry.publicReview && isExpanded && (
-            <div className='mb-3 p-3 bg-green-400/5 border border-green-400/20 rounded-lg animate-fadeIn'>
+            <div className='mb-3 p-3 bg-primary-400/5 border border-primary-400/20 rounded-lg animate-fadeIn'>
               <div className='flex items-center gap-2 mb-1'>
-                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-green-400'>
+                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-primary-400'>
                   <path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
                   <circle cx='9' cy='7' r='4' />
                   <path d='M23 21v-2a4 4 0 0 0-3-3.87' />
                   <path d='M16 3.13a4 4 0 0 1 0 7.75' />
                 </svg>
-                <span className='text-xs font-semibold text-green-400'>Public Review</span>
+                <span className='text-xs font-semibold text-primary-400'>Public Review</span>
               </div>
               <p className='text-sm text-gray-300 leading-relaxed'>
                 {entry.publicReview}
@@ -200,13 +200,13 @@ function DiaryEntry({ entry, onDelete }) {
           )}
           
           {entry.privateNote && isExpanded && (
-            <div className='p-3 bg-purple-400/5 border border-purple-400/20 rounded-lg animate-fadeIn'>
+            <div className='p-3 bg-accent-400/5 border border-accent-400/20 rounded-lg animate-fadeIn'>
               <div className='flex items-center gap-2 mb-1'>
-                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-purple-400'>
+                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-3.5 h-3.5 text-accent-400'>
                   <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
                   <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                 </svg>
-                <span className='text-xs font-semibold text-purple-400'>Private Note</span>
+                <span className='text-xs font-semibold text-accent-400'>Private Note</span>
               </div>
               <p className='text-sm text-gray-300 leading-relaxed'>
                 {entry.privateNote}
@@ -411,22 +411,22 @@ function Diary() {
           <div className='text-3xl font-black text-orange-400 mb-1'>{films.length}</div>
           <div className='text-sm text-gray-400'>Films Logged</div>
         </div>
-        <div className='bg-gradient-to-br from-cyan-400/10 to-cyan-500/10 rounded-xl p-6 border border-cyan-400/20'>
-          <div className='text-3xl font-black text-cyan-400 mb-1'>{completedSeriesCount}</div>
+        <div className='bg-gradient-to-br from-primary-400/10 to-primary-500/10 rounded-xl p-6 border border-primary-400/20'>
+          <div className='text-3xl font-black text-primary-400 mb-1'>{completedSeriesCount}</div>
           <div className='text-sm text-gray-400'>Series Logged</div>
         </div>
         <div className='bg-gradient-to-br from-blue-400/10 to-blue-500/10 rounded-xl p-6 border border-blue-400/20'>
           <div className='text-3xl font-black text-blue-400 mb-1'>{episodes.length}</div>
           <div className='text-sm text-gray-400'>Episodes Logged</div>
         </div>
-        <div className='bg-gradient-to-br from-purple-400/10 to-purple-500/10 rounded-xl p-6 border border-purple-400/20'>
-          <div className='text-3xl font-black text-purple-400 mb-1'>{Object.keys(entriesMap).length}</div>
+        <div className='bg-gradient-to-br from-accent-400/10 to-accent-500/10 rounded-xl p-6 border border-accent-400/20'>
+          <div className='text-3xl font-black text-accent-400 mb-1'>{Object.keys(entriesMap).length}</div>
           <div className='text-sm text-gray-400'>Days with Entries</div>
         </div>
-        <div className='bg-gradient-to-br from-green-400/10 to-green-500/10 rounded-xl p-6 border border-green-400/20'>
+        <div className='bg-gradient-to-br from-primary-400/10 to-primary-500/10 rounded-xl p-6 border border-primary-400/20'>
           <div className='flex items-center gap-2 mb-1'>
             <span className='text-2xl'>🔥</span>
-            <div className='text-3xl font-black text-green-400'>{currentStreak}</div>
+            <div className='text-3xl font-black text-primary-400'>{currentStreak}</div>
           </div>
           <div className='text-sm text-gray-400'>
             {currentStreak === 0
@@ -436,7 +436,7 @@ function Diary() {
               : 'Day streak'}
           </div>
           {currentStreak > 0 && (
-            <div className='text-xs text-green-400/70 mt-1'>
+            <div className='text-xs text-primary-400/70 mt-1'>
               Keep watching daily!
             </div>
           )}

@@ -81,7 +81,7 @@ function Profile() {
                   </div>
                 )}
               </div>
-              <div className='absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-[#1a1f2e]'></div>
+              <div className='absolute -bottom-2 -right-2 bg-primary-500 w-8 h-8 rounded-full border-4 border-[#1a1f2e]'></div>
             </div>
 
             {/* User Info */}
@@ -169,14 +169,14 @@ function Profile() {
 
         {/* Stats Grid */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
-          <Link to='/watchlist' className='bg-[#1c1f26] rounded-xl p-6 border border-white/10 hover:border-green-400/30 transition-all group'>
+          <Link to='/watchlist' className='bg-[#1c1f26] rounded-xl p-6 border border-white/10 hover:border-primary-400/30 transition-all group'>
             <div className='flex items-center justify-between mb-2'>
               <span className='text-gray-400 text-sm font-semibold uppercase tracking-wider'>Watchlist</span>
-              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-5 h-5 text-green-400'>
+              <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-5 h-5 text-primary-400'>
                 <path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />
               </svg>
             </div>
-            <p className='text-4xl font-black text-white group-hover:text-green-400 transition-colors'>{stats.watchlist}</p>
+            <p className='text-4xl font-black text-white group-hover:text-primary-400 transition-colors'>{stats.watchlist}</p>
             <p className='text-gray-500 text-sm mt-1'>films to watch</p>
           </Link>
 
@@ -226,7 +226,7 @@ function Profile() {
             <Link
               to='/settings'
               className='flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-all group'>
-              <div className='w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:bg-purple-500/30 transition-colors'>
+              <div className='w-10 h-10 rounded-lg bg-accent-500/20 flex items-center justify-center text-accent-400 group-hover:bg-accent-500/30 transition-colors'>
                 <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-5 h-5'>
                   <circle cx='12' cy='12' r='3' />
                   <path d='M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m0 6l4.2 4.2M23 12h-6m-6 0H1m18.2 5.2l-4.2-4.2m0-6l4.2-4.2' />

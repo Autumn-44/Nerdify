@@ -78,7 +78,7 @@ function Search() {
             onChange={e => setQuery(e.target.value)}
             placeholder='e.g. Interstellar, Breaking Bad, Tom Hanks...'
             autoFocus
-            className='w-full bg-[#1c1f26] border border-white/10 rounded-xl pl-12 pr-5 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 transition-all'
+            className='w-full bg-[#1c1f26] border border-white/10 rounded-xl pl-12 pr-5 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-primary-400/50 focus:ring-1 focus:ring-primary-400/20 transition-all'
           />
 
           {query && (
@@ -120,7 +120,7 @@ function Search() {
                 onClick={() => setActiveTab('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'all'
-                    ? 'bg-green-400/20 text-green-400'
+                    ? 'bg-primary-400/20 text-primary-400'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -130,7 +130,7 @@ function Search() {
                 onClick={() => setActiveTab('movies')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'movies'
-                    ? 'bg-green-400/20 text-green-400'
+                    ? 'bg-primary-400/20 text-primary-400'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -140,7 +140,7 @@ function Search() {
                 onClick={() => setActiveTab('tv')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'tv'
-                    ? 'bg-green-400/20 text-green-400'
+                    ? 'bg-primary-400/20 text-primary-400'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -150,7 +150,7 @@ function Search() {
                 onClick={() => setActiveTab('people')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === 'people'
-                    ? 'bg-green-400/20 text-green-400'
+                    ? 'bg-primary-400/20 text-primary-400'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >

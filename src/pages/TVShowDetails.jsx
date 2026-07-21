@@ -46,8 +46,8 @@ function getRatingColor(value) {
   if (value <= 3) return '#ef4444'
   if (value <= 5) return '#f97316'
   if (value <= 7) return '#eab308'
-  if (value <= 8.5) return '#4ade80'
-  return '#22d3ee'
+  if (value <= 8.5) return '#fbbf24'
+  return '#f59e0b'
 }
 
 function TVShowDetails() {
@@ -114,7 +114,7 @@ function TVShowDetails() {
       case WATCH_STATUS.WATCHING:
         return { bg: 'rgba(251,191,36,0.1)', text: '#fbbf24', border: 'rgba(251,191,36,0.3)' }
       case WATCH_STATUS.COMPLETED:
-        return { bg: 'rgba(74,222,128,0.1)', text: '#4ade80', border: 'rgba(74,222,128,0.3)' }
+        return { bg: 'rgba(251, 191, 36,0.1)', text: '#fbbf24', border: 'rgba(251, 191, 36,0.3)' }
       default:
         return { bg: 'rgba(107,114,128,0.1)', text: '#6b7280', border: 'rgba(107,114,128,0.3)' }
     }
@@ -248,7 +248,7 @@ function TVShowDetails() {
                   <button
                     onClick={() => handleStatusChange(WATCH_STATUS.COMPLETED)}
                     className='w-full px-4 py-2.5 text-left text-sm hover:bg-white/5 transition-colors'
-                    style={{ color: '#4ade80' }}>
+                    style={{ color: '#fbbf24' }}>
                     Completed
                   </button>
                 </div>
@@ -259,8 +259,8 @@ function TVShowDetails() {
               onClick={toggleWatchlist}
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                 watchlisted
-                  ? 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-red-400/10 hover:text-red-400 hover:border-red-400/30'
-                  : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-green-400/10 hover:text-green-400 hover:border-green-400/30'
+                  ? 'bg-primary-400/10 text-primary-400 border border-primary-400/30 hover:bg-red-400/10 hover:text-red-400 hover:border-red-400/30'
+                  : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-primary-400/10 hover:text-primary-400 hover:border-primary-400/30'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
                 <path d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />
@@ -292,7 +292,7 @@ function TVShowDetails() {
                   <span
                     key={genre}
                     className='px-3 py-1 rounded-full text-xs font-semibold'
-                    style={{ background: 'rgba(74,222,128,0.1)', color: '#4ade80', border: '1px solid rgba(74,222,128,0.2)' }}>
+                    style={{ background: 'rgba(251, 191, 36,0.1)', color: '#fbbf24', border: '1px solid rgba(251, 191, 36,0.2)' }}>
                     {genre}
                   </span>
                 ))}
@@ -510,14 +510,14 @@ function TVShowDetails() {
                     <path d='M16 3.13a4 4 0 0 1 0 7.75' />
                   </svg>
                   Public Review (Optional)
-                  <span className='text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full'>Visible to everyone</span>
+                  <span className='text-xs text-primary-400 bg-primary-400/10 px-2 py-0.5 rounded-full'>Visible to everyone</span>
                 </label>
                 <textarea
                   value={publicReview}
                   onChange={e => setPublicReview(e.target.value)}
                   placeholder='Share your thoughts with the community...'
                   rows={3}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 outline-none transition-all resize-none'
+                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-primary-400/50 focus:ring-1 focus:ring-primary-400/20 outline-none transition-all resize-none'
                 />
               </div>
 
@@ -529,14 +529,14 @@ function TVShowDetails() {
                     <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                   </svg>
                   Private Note (Optional)
-                  <span className='text-xs text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded-full'>Only you can see</span>
+                  <span className='text-xs text-accent-400 bg-accent-400/10 px-2 py-0.5 rounded-full'>Only you can see</span>
                 </label>
                 <textarea
                   value={privateNote}
                   onChange={e => setPrivateNote(e.target.value)}
                   placeholder='Personal notes, reminders, or thoughts...'
                   rows={3}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/20 outline-none transition-all resize-none'
+                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-accent-400/50 focus:ring-1 focus:ring-accent-400/20 outline-none transition-all resize-none'
                 />
               </div>
 

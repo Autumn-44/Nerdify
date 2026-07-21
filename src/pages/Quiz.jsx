@@ -14,7 +14,7 @@ function Quiz() {
       title: 'Guess the Movie',
       icon: '🎬',
       description: 'Reveal the blurred poster and guess the movie title',
-      color: 'from-blue-500 to-purple-500',
+      color: 'from-blue-500 to-accent-500',
       component: GuessTheMovie,
     },
     {
@@ -95,7 +95,7 @@ function Quiz() {
                   <h3 className='text-2xl font-bold text-white mb-2'>{mode.title}</h3>
                   <p className='text-gray-400 text-sm'>{mode.description}</p>
                   
-                  <div className='mt-6 flex items-center justify-center gap-2 text-green-400 font-semibold'>
+                  <div className='mt-6 flex items-center justify-center gap-2 text-primary-400 font-semibold'>
                     <span>Play Now</span>
                     <span className='group-hover:translate-x-1 transition-transform'>→</span>
                   </div>
@@ -105,9 +105,9 @@ function Quiz() {
           </div>
 
           {totalScore > 0 && (
-            <div className='text-center p-6 bg-green-500/10 border border-green-500/30 rounded-xl'>
+            <div className='text-center p-6 bg-primary-500/10 border border-primary-500/30 rounded-xl'>
               <p className='text-gray-400 mb-2'>Total Score</p>
-              <p className='text-4xl font-black text-green-400'>{totalScore}</p>
+              <p className='text-4xl font-black text-primary-400'>{totalScore}</p>
             </div>
           )}
         </div>

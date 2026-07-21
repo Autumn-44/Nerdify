@@ -258,14 +258,14 @@ function Settings() {
                 <div className='flex-1 space-y-4'>
                   {photoPreview && (
                     <div className='flex flex-col items-center gap-3'>
-                      <div className='w-32 h-32 rounded-full overflow-hidden border-4 border-green-500/30'>
+                      <div className='w-32 h-32 rounded-full overflow-hidden border-4 border-primary-500/30'>
                         <img
                           src={photoPreview}
                           alt='Preview'
                           className='w-full h-full object-cover'
                         />
                       </div>
-                      <p className='text-sm text-green-400'>Preview</p>
+                      <p className='text-sm text-primary-400'>Preview</p>
                     </div>
                   )}
 
@@ -276,7 +276,7 @@ function Settings() {
                   )}
 
                   {photoMessage && (
-                    <div className='bg-green-500/10 border border-green-500 text-green-400 p-3 rounded-lg'>
+                    <div className='bg-primary-500/10 border border-primary-500 text-primary-400 p-3 rounded-lg'>
                       {photoMessage}
                     </div>
                   )}
@@ -319,7 +319,7 @@ function Settings() {
                   <label className='text-gray-400 text-sm'>Email Verified</label>
                   <p className='text-white text-lg'>
                     {user?.emailVerified ? (
-                      <span className='text-green-400'>✓ Verified</span>
+                      <span className='text-primary-400'>✓ Verified</span>
                     ) : (
                       <span className='text-yellow-400'>⚠ Not verified</span>
                     )}
@@ -366,7 +366,7 @@ function Settings() {
               )}
 
               {importResult && (
-                <div className='bg-green-500/10 border border-green-500 text-green-400 p-4 rounded-lg mb-4'>
+                <div className='bg-primary-500/10 border border-primary-500 text-primary-400 p-4 rounded-lg mb-4'>
                   <h3 className='font-semibold mb-2'>✓ Import Complete!</h3>
                   <p>Type: {importResult.type}</p>
                   <p>Total: {importResult.total}</p>

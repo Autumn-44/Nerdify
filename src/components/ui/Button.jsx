@@ -12,7 +12,7 @@ function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`bg-green-500 hover:bg-green-600 transition px-5 py-2 rounded-lg font-semibold text-white ${className}`}
+      className={`bg-primary-500 hover:bg-primary-600 transition px-5 py-2 rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       {...props}
     >
       {children ?? text}

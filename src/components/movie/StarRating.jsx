@@ -27,8 +27,8 @@ function getRatingColor(value) {
   if (value <= 3) return '#ef4444'
   if (value <= 5) return '#f97316'
   if (value <= 7) return '#eab308'
-  if (value <= 8.5) return '#4ade80'
-  return '#22d3ee'
+  if (value <= 8.5) return '#fbbf24'
+  return '#f59e0b'
 }
 
 function StarRating({ movieId, currentRating, onRate, onUnrate }) {

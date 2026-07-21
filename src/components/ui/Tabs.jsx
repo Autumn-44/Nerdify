@@ -7,7 +7,7 @@ function Tabs({ tabs, activeTab, setActiveTab }) {
           onClick={() => setActiveTab(tab)}
           className={`pb-2 ${
             activeTab === tab
-              ? 'border-b-2 border-green-500 text-green-500'
+              ? 'border-b-2 border-primary-500 text-primary-400'
               : 'text-gray-400'
           }`}
         >

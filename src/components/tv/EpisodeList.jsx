@@ -31,8 +31,8 @@ function getRatingColor(value) {
   if (value <= 3) return '#ef4444'
   if (value <= 5) return '#f97316'
   if (value <= 7) return '#eab308'
-  if (value <= 8.5) return '#4ade80'
-  return '#22d3ee'
+  if (value <= 8.5) return '#fbbf24'
+  return '#f59e0b'
 }
 
 function EpisodeList({ show, season }) {
@@ -187,10 +187,10 @@ function EpisodeList({ show, season }) {
               className='rounded-lg p-4 transition-all duration-200'
               style={{
                 background: isWatched 
-                  ? 'linear-gradient(135deg, rgba(74,222,128,0.08) 0%, rgba(34,211,238,0.05) 100%)'
+                  ? 'linear-gradient(135deg, rgba(251, 191, 36,0.08) 0%, rgba(245, 158, 11,0.05) 100%)'
                   : 'rgba(22,27,34,0.6)',
                 border: '1px solid',
-                borderColor: isWatched ? 'rgba(74,222,128,0.2)' : 'rgba(48,54,61,0.8)'
+                borderColor: isWatched ? 'rgba(251, 191, 36,0.2)' : 'rgba(48,54,61,0.8)'
               }}
             >
               <div className='flex items-start gap-4'>
@@ -199,9 +199,9 @@ function EpisodeList({ show, season }) {
                   className='flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg'
                   style={{
                     background: isWatched 
-                      ? 'linear-gradient(135deg, rgba(74,222,128,0.2) 0%, rgba(34,211,238,0.15) 100%)'
+                      ? 'linear-gradient(135deg, rgba(251, 191, 36,0.2) 0%, rgba(245, 158, 11,0.15) 100%)'
                       : 'rgba(48,54,61,0.8)',
-                    color: isWatched ? '#4ade80' : '#8b949e'
+                    color: isWatched ? '#fbbf24' : '#8b949e'
                   }}
                 >
                   {episode.episode_number}
@@ -231,11 +231,11 @@ function EpisodeList({ show, season }) {
                       className='flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200'
                       style={{
                         background: isWatched 
-                          ? 'linear-gradient(135deg, rgba(74,222,128,0.2) 0%, rgba(34,211,238,0.15) 100%)'
+                          ? 'linear-gradient(135deg, rgba(251, 191, 36,0.2) 0%, rgba(245, 158, 11,0.15) 100%)'
                           : 'rgba(251,146,60,0.2)',
-                        color: isWatched ? '#4ade80' : '#fb923c',
+                        color: isWatched ? '#fbbf24' : '#fb923c',
                         border: '1px solid',
-                        borderColor: isWatched ? 'rgba(74,222,128,0.3)' : 'rgba(251,146,60,0.3)'
+                        borderColor: isWatched ? 'rgba(251, 191, 36,0.3)' : 'rgba(251,146,60,0.3)'
                       }}
                     >
                       {isWatched ? '✓ Logged' : 'Log Episode'}
@@ -378,14 +378,14 @@ function EpisodeList({ show, season }) {
                     <path d='M16 3.13a4 4 0 0 1 0 7.75' />
                   </svg>
                   Public Review (Optional)
-                  <span className='text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full'>Visible to everyone</span>
+                  <span className='text-xs text-primary-400 bg-primary-400/10 px-2 py-0.5 rounded-full'>Visible to everyone</span>
                 </label>
                 <textarea
                   value={publicReview}
                   onChange={e => setPublicReview(e.target.value)}
                   placeholder='Share your thoughts about this episode...'
                   rows={3}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 outline-none transition-all resize-none'
+                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-primary-400/50 focus:ring-1 focus:ring-primary-400/20 outline-none transition-all resize-none'
                 />
               </div>
 
@@ -397,14 +397,14 @@ function EpisodeList({ show, season }) {
                     <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                   </svg>
                   Private Note (Optional)
-                  <span className='text-xs text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded-full'>Only you can see</span>
+                  <span className='text-xs text-accent-400 bg-accent-400/10 px-2 py-0.5 rounded-full'>Only you can see</span>
                 </label>
                 <textarea
                   value={privateNote}
                   onChange={e => setPrivateNote(e.target.value)}
                   placeholder='Personal notes, reminders, or thoughts...'
                   rows={3}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/20 outline-none transition-all resize-none'
+                  className='w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:border-accent-400/50 focus:ring-1 focus:ring-accent-400/20 outline-none transition-all resize-none'
                 />
               </div>
 

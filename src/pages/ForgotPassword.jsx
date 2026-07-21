@@ -44,7 +44,7 @@ function ForgotPassword() {
         )}
 
         {message && (
-          <div className='bg-green-500/10 border border-green-500 text-green-400 p-3 rounded-lg mb-4'>
+          <div className='bg-primary-500/10 border border-primary-500 text-primary-400 p-3 rounded-lg mb-4'>
             {message}
           </div>
         )}

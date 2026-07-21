@@ -336,7 +336,7 @@ function OscarTriviaHard({ onComplete }) {
                 disabled={showResult}
                 className={`p-4 rounded-xl text-left font-semibold transition-all duration-200 ${
                   showCorrect
-                    ? 'bg-green-400/20 border-2 border-green-400 text-green-400'
+                    ? 'bg-primary-400/20 border-2 border-primary-400 text-primary-400'
                     : showWrong
                     ? 'bg-red-400/20 border-2 border-red-400 text-red-400'
                     : isSelected
@@ -358,11 +358,11 @@ function OscarTriviaHard({ onComplete }) {
       {showResult && (
         <div className={`p-6 rounded-xl mb-6 ${
           isCorrect
-            ? 'bg-green-400/10 border border-green-400/30'
+            ? 'bg-primary-400/10 border border-primary-400/30'
             : 'bg-red-400/10 border border-red-400/30'
         }`}>
           <p className={`text-xl font-bold mb-2 ${
-            isCorrect ? 'text-green-400' : 'text-red-400'
+            isCorrect ? 'text-primary-400' : 'text-red-400'
           }`}>
             {isCorrect ? '🎉 Correct!' : timeLeft === 0 ? '⏰ Time\'s Up!' : '❌ Incorrect'}
           </p>

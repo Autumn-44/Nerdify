@@ -9,8 +9,8 @@ function getRatingColor(value) {
   if (value <= 3) return '#ef4444'
   if (value <= 5) return '#f97316'
   if (value <= 7) return '#eab308'
-  if (value <= 8.5) return '#4ade80'
-  return '#22d3ee'
+  if (value <= 8.5) return '#fbbf24'
+  return '#f59e0b'
 }
 
 function SeasonList({ show, seasons }) {
@@ -140,10 +140,10 @@ function SeasonList({ show, seasons }) {
                 {progress.watched > 0 && (
                   <div className='space-y-1'>
                     <div className='flex items-center justify-between text-xs'>
-                      <span style={{ color: '#4ade80' }}>
+                      <span style={{ color: '#fbbf24' }}>
                         {progress.watched} / {season.episode_count} watched
                       </span>
-                      <span style={{ color: '#4ade80' }}>
+                      <span style={{ color: '#fbbf24' }}>
                         {progressPercent}%
                       </span>
                     </div>
@@ -155,7 +155,7 @@ function SeasonList({ show, seasons }) {
                         className='h-full transition-all duration-500'
                         style={{
                           width: `${progressPercent}%`,
-                          background: 'linear-gradient(90deg, #4ade80 0%, #22d3ee 100%)'
+                          background: 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)'
                         }}
                       />
                     </div>

@@ -168,7 +168,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
     
     if (showResult) {
       if (isCorrect) {
-        buttonClass += 'bg-green-500/20 border-green-500 text-green-400'
+        buttonClass += 'bg-primary-500/20 border-primary-500 text-primary-400'
       } else if (isSelected && !isCorrect) {
         buttonClass += 'bg-red-500/20 border-red-500 text-red-400'
       } else {
@@ -176,9 +176,9 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
       }
     } else {
       if (isSelected) {
-        buttonClass += 'bg-green-400/20 border-green-400 text-green-400'
+        buttonClass += 'bg-primary-400/20 border-primary-400 text-primary-400'
       } else {
-        buttonClass += 'bg-[#252930] border-white/10 text-white hover:border-green-400/50 hover:bg-green-400/10'
+        buttonClass += 'bg-[#252930] border-white/10 text-white hover:border-primary-400/50 hover:bg-primary-400/10'
       }
     }
 
@@ -205,7 +205,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
   if (loading) {
     return (
       <div className='flex items-center justify-center py-20' role='status' aria-live='polite'>
-        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-400' aria-label='Loading question'></div>
+        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-400' aria-label='Loading question'></div>
       </div>
     )
   }
@@ -218,7 +218,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
         <p className='text-red-400 mb-4'>{error || 'Failed to load question. Please try again.'}</p>
         <button
           onClick={retryLoadQuestion}
-          className='px-6 py-3 bg-green-400 hover:bg-green-300 text-black font-bold rounded-xl transition-colors'
+          className='px-6 py-3 bg-primary-400 hover:bg-primary-300 text-black font-bold rounded-xl transition-colors'
         >
           Retry
         </button>
@@ -316,11 +316,11 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
 
       {/* Result Message */}
       {gameState === 'correct' && (
-        <div className='bg-green-500/10 border border-green-500/30 rounded-xl p-6 mb-6 text-center' role='alert' aria-live='assertive'>
+        <div className='bg-primary-500/10 border border-primary-500/30 rounded-xl p-6 mb-6 text-center' role='alert' aria-live='assertive'>
           <div className='text-5xl mb-3' aria-hidden='true'>🎉</div>
-          <h3 className='text-2xl font-bold text-green-400 mb-2'>Correct!</h3>
+          <h3 className='text-2xl font-bold text-primary-400 mb-2'>Correct!</h3>
           <p className='text-white text-lg mb-2'>
-            You earned <span className='font-bold text-green-400'>{score} points</span>
+            You earned <span className='font-bold text-primary-400'>{score} points</span>
           </p>
           {question.year && (
             <p className='text-gray-400 text-sm'>Released in {question.year}</p>
@@ -333,7 +333,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
           <div className='text-5xl mb-3' aria-hidden='true'>😔</div>
           <h3 className='text-2xl font-bold text-red-400 mb-2'>Wrong!</h3>
           <p className='text-white text-lg'>
-            The correct answer was: <span className='font-bold text-green-400'>{question.correctAnswer}</span>
+            The correct answer was: <span className='font-bold text-primary-400'>{question.correctAnswer}</span>
           </p>
           {question.year && (
             <p className='text-gray-400 text-sm mt-2'>Released in {question.year}</p>
@@ -347,7 +347,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
           <button
             onClick={submitAnswer}
             disabled={!selectedAnswer}
-            className='w-full py-4 bg-green-400 hover:bg-green-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-colors'
+            className='w-full py-4 bg-primary-400 hover:bg-primary-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-colors'
             aria-label='Submit your answer'
           >
             Submit Answer
@@ -359,7 +359,7 @@ function OscarTrivia({ onComplete, maxQuestions, onError }) {
       ) : (
         <button
           onClick={nextQuestion}
-          className='w-full py-4 bg-green-400 hover:bg-green-300 text-black font-bold text-lg rounded-xl transition-colors'
+          className='w-full py-4 bg-primary-400 hover:bg-primary-300 text-black font-bold text-lg rounded-xl transition-colors'
           aria-label='Continue to next question'
         >
           {maxQuestions && questionCount >= maxQuestions - 1 ? 'Finish Quiz' : 'Next Question →'}

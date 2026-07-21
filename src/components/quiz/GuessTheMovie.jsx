@@ -206,10 +206,10 @@ function GuessTheMovie({ onComplete }) {
 
       {/* Result Screen */}
       {gameState === 'correct' && (
-        <div className='bg-green-500/10 border-2 border-green-500 rounded-xl p-8 text-center'>
+        <div className='bg-primary-500/10 border-2 border-primary-500 rounded-xl p-8 text-center'>
           <div className='text-6xl mb-4'>🎉</div>
           <h2 className='text-4xl font-black text-white mb-2'>Correct!</h2>
-          <p className='text-xl text-green-400 font-bold mb-6'>+{score} points</p>
+          <p className='text-xl text-primary-400 font-bold mb-6'>+{score} points</p>
           <div className='mb-6'>
             <img
               src={movie.poster}
@@ -221,7 +221,7 @@ function GuessTheMovie({ onComplete }) {
           <p className='text-sm text-gray-400'>{movie.overview}</p>
           <button
             onClick={nextMovie}
-            className='mt-6 px-8 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors'
+            className='mt-6 px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors'
           >
             Next Movie →
           </button>

@@ -10,17 +10,17 @@ function Navbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <nav className='sticky top-0 z-50 backdrop-blur-xl border-b' 
-      style={{ 
-        background: 'rgba(13, 17, 23, 0.8)',
-        borderColor: 'rgba(255, 255, 255, 0.08)',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)'
+    <nav className='sticky top-0 z-50 backdrop-blur-xl border-b'
+      style={{
+        background: 'rgba(15, 23, 42, 0.85)',
+        borderColor: 'rgba(251, 191, 36, 0.1)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)'
       }}>
       <div className='max-w-7xl mx-auto px-6 md:px-10 py-4'>
         <div className='flex justify-between items-center'>
           {/* Logo */}
           <Link to='/' className='flex items-center gap-3 group'>
-            <div className='relative h-12 w-12 rounded-2xl shadow-lg shadow-cyan-400/20 transition-all duration-300 group-hover:shadow-purple-500/25 group-hover:scale-105 overflow-hidden'>
+            <div className='relative h-12 w-12 rounded-2xl shadow-lg shadow-primary-500/20 transition-all duration-300 group-hover:shadow-primary-400/30 group-hover:scale-105 overflow-hidden'>
               <img
                 src='/logo.png'
                 alt='Nerdify logo'
@@ -28,7 +28,7 @@ function Navbar() {
               />
             </div>
             <div className='flex flex-col'>
-              <span className='text-2xl font-black bg-gradient-to-r from-green-400 via-cyan-400 to-purple-500 bg-clip-text text-transparent'>
+              <span className='text-2xl font-black bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent'>
                 Nerdify
               </span>
               <span className='text-[10px] font-semibold text-gray-500 -mt-1 tracking-wider'>
@@ -42,8 +42,8 @@ function Navbar() {
             <Link 
               to='/' 
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/') 
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30' 
+                isActive('/')
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -57,7 +57,7 @@ function Navbar() {
               to='/tv-shows'
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
                 isActive('/tv-shows')
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -70,8 +70,8 @@ function Navbar() {
             <Link
               to='/search'
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/search') 
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30' 
+                isActive('/search')
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -84,8 +84,8 @@ function Navbar() {
             <Link 
               to='/diary' 
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/diary') 
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30' 
+                isActive('/diary')
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -98,8 +98,8 @@ function Navbar() {
             <Link 
               to='/watchlist' 
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
-                isActive('/watchlist') 
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30' 
+                isActive('/watchlist')
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -112,7 +112,7 @@ function Navbar() {
               to='/quiz'
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
                 isActive('/quiz')
-                  ? 'bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-400 border border-orange-400/30'
+                  ? 'bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-400 border border-primary-400/30'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-4 h-4'>
@@ -131,7 +131,7 @@ function Navbar() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className='flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-all duration-200'
                 >
-                  <div className='w-8 h-8 rounded-full overflow-hidden border-2 border-orange-500/30 hover:border-orange-500/50 transition-all duration-200'>
+                  <div className='w-8 h-8 rounded-full overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/50 transition-all duration-200'>
                     {user.photoURL ? (
                       <img
                         src={user.photoURL}
@@ -140,7 +140,7 @@ function Navbar() {
                       />
                     ) : (
                       <div className='w-full h-full flex items-center justify-center font-bold text-sm'
-                        style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
+                        style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#0f172a' }}>
                         {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -209,7 +209,7 @@ function Navbar() {
                 <Link 
                   to='/register' 
                   className='px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 flex items-center gap-2'
-                  style={{ background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)', color: '#0d1117' }}>
+                  style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#0f172a' }}>
                   Get Started
                   <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' className='w-4 h-4'>
                     <line x1='5' y1='12' x2='19' y2='12' />

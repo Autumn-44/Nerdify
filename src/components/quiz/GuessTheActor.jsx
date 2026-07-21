@@ -127,7 +127,7 @@ function GuessTheActor({ onComplete }) {
   if (loading) {
     return (
       <div className='flex items-center justify-center py-20'>
-        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-400'></div>
+        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-400'></div>
       </div>
     )
   }
@@ -165,7 +165,7 @@ function GuessTheActor({ onComplete }) {
         {gameState === 'playing' && revealedFacts < facts.length && (
           <button
             onClick={revealMoreFacts}
-            className='mt-6 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-lg transition-colors'
+            className='mt-6 w-full px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-bold rounded-lg transition-colors'
           >
             💡 Reveal Another Fact ({facts.length - revealedFacts} remaining)
           </button>
@@ -176,10 +176,10 @@ function GuessTheActor({ onComplete }) {
       {gameState !== 'playing' && (
         <div className='mb-8'>
           {gameState === 'correct' ? (
-            <div className='bg-green-500/10 border border-green-500/30 rounded-xl p-8 text-center'>
+            <div className='bg-primary-500/10 border border-primary-500/30 rounded-xl p-8 text-center'>
               <div className='text-6xl mb-4'>🎉</div>
               <h2 className='text-3xl font-black text-white mb-2'>Correct!</h2>
-              <p className='text-xl text-green-400 font-bold mb-4'>+{score} points</p>
+              <p className='text-xl text-primary-400 font-bold mb-4'>+{score} points</p>
               <div className='flex justify-center'>
                 <img
                   src={actor.profileImage}
@@ -220,7 +220,7 @@ function GuessTheActor({ onComplete }) {
             onChange={(e) => setUserAnswer(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder='Type the actor/actress name...'
-            className='w-full bg-[#1c1f26] border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 transition-all'
+            className='w-full bg-[#1c1f26] border border-white/10 rounded-xl px-6 py-4 text-white text-lg placeholder-gray-600 outline-none focus:border-primary-400/50 focus:ring-1 focus:ring-primary-400/20 transition-all'
             autoFocus
           />
 
@@ -228,7 +228,7 @@ function GuessTheActor({ onComplete }) {
             <button
               onClick={() => checkAnswer(false)}
               disabled={!userAnswer.trim()}
-              className='py-4 bg-green-400 hover:bg-green-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-colors'
+              className='py-4 bg-primary-400 hover:bg-primary-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold text-lg rounded-xl transition-colors'
             >
               Submit Answer
             </button>
@@ -252,7 +252,7 @@ function GuessTheActor({ onComplete }) {
       {gameState !== 'playing' && (
         <button
           onClick={nextActor}
-          className='w-full py-4 bg-green-400 hover:bg-green-300 text-black font-bold text-lg rounded-xl transition-colors'
+          className='w-full py-4 bg-primary-400 hover:bg-primary-300 text-black font-bold text-lg rounded-xl transition-colors'
         >
           Next Actor →
         </button>
