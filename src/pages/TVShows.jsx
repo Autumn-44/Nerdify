@@ -5,7 +5,19 @@ import MainLayout from '../layouts/MainLayout'
 import Loader from '../components/common/Loader'
 import tvShowService from '../services/tvShowService'
 
-function TVShowSection({ title, subtitle, icon, shows, loading, error, onLoadMore, hasMore }) {
+function SectionGroup({ label }) {
+  return (
+    <div className='flex items-center gap-4 mb-10 mt-4'>
+      <span className='text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full'
+        style={{ color: '#fbbf24', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.18)' }}>
+        {label}
+      </span>
+      <div className='flex-1 h-px' style={{ background: 'linear-gradient(to right, rgba(251,191,36,0.15), transparent)' }} />
+    </div>
+  )
+}
+
+function TVShowSection({ title, subtitle, shows, loading, error, onLoadMore, hasMore }) {
   const observerTarget = useRef(null)
 
   useEffect(() => {
@@ -33,11 +45,10 @@ function TVShowSection({ title, subtitle, icon, shows, loading, error, onLoadMor
   if (!shows.length && !loading) return null
 
   return (
-    <div className='mb-16'>
-      <div className='flex items-center gap-4 mb-6'>
+    <div className='mb-12'>
+      <div className='flex items-center gap-4 mb-5'>
         <div>
-          <h2 className='text-2xl font-black flex items-center gap-2' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
-            <span className='text-3xl'>{icon}</span>
+          <h2 className='text-2xl font-black' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
             {title}
           </h2>
           <p className='text-sm mt-1' style={{ color: '#8b949e' }}>{subtitle}</p>
@@ -197,7 +208,7 @@ function TVShows() {
   return (
     <MainLayout>
       {/* Hero Section */}
-      <div className='relative -mx-6 md:-mx-10 -mt-6 px-6 md:px-10 pt-20 pb-20 mb-16 overflow-hidden'>
+      <div className='relative -mx-6 md:-mx-10 -mt-6 px-6 md:px-10 pt-12 pb-10 mb-6 overflow-hidden'>
         {/* Animated Background */}
         <div className='absolute inset-0 pointer-events-none'>
           <div className='absolute inset-0' style={{
@@ -212,21 +223,9 @@ function TVShows() {
         </div>
 
         <div className='relative max-w-3xl'>
-          {/* Badge */}
-          <div className='inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-8 border backdrop-blur-sm'
-            style={{ 
-              color: '#d97706', 
-              background: 'rgba(217, 119, 6,0.1)', 
-              borderColor: 'rgba(217, 119, 6,0.3)',
-              boxShadow: '0 0 20px rgba(217, 119, 6,0.1)'
-            }}>
-            <span className='w-2 h-2 rounded-full bg-accent-400 animate-pulse' />
-            Binge-Worthy Series & Shows
-          </div>
-
           {/* Main Heading */}
-          <h1 className='text-6xl md:text-7xl font-black leading-[1.05] mb-6'
-            style={{ letterSpacing: '-0.04em', color: '#e6edf3' }}>
+          <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] mb-6'
+            style={{ letterSpacing: '-0.03em', color: '#e6edf3' }}>
             TV Shows{' '}
             <span style={{
               background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%)',
@@ -238,7 +237,7 @@ function TVShows() {
           </h1>
 
           {/* Subtitle */}
-          <p className='text-xl mb-10 leading-relaxed max-w-2xl' style={{ color: '#8b949e' }}>
+          <p className='text-base sm:text-xl mb-8 leading-relaxed max-w-2xl' style={{ color: '#8b949e' }}>
             Discover trending series, track episodes, and never miss your favorite shows. Your complete TV companion.
           </p>
 
@@ -274,47 +273,22 @@ function TVShows() {
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className='flex flex-wrap gap-8 mt-12 pt-8 border-t' style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <div>
-              <div className='text-3xl font-black' style={{ color: '#d97706' }}>1000+</div>
-              <div className='text-sm' style={{ color: '#8b949e' }}>TV Shows</div>
-            </div>
-            <div>
-              <div className='text-3xl font-black' style={{ color: '#f59e0b' }}>Daily</div>
-              <div className='text-sm' style={{ color: '#8b949e' }}>Updates</div>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* TV Show Sections with Infinite Scroll */}
+      <SectionGroup label="What's Hot" />
       <TVShowSection
         title="Trending This Week"
         subtitle="Most-watched TV shows right now"
-        icon="🔥"
         shows={trending}
         loading={loadingTrending}
         error={errorTrending}
         onLoadMore={loadTrending}
         hasMore={hasMoreTrending}
       />
-
-      <TVShowSection
-        title="Top Rated Series"
-        subtitle="Highest rated shows from 2020 onwards"
-        icon="⭐"
-        shows={topRated}
-        loading={loadingTopRated}
-        error={errorTopRated}
-        onLoadMore={loadTopRated}
-        hasMore={hasMoreTopRated}
-      />
-
       <TVShowSection
         title="Popular Right Now"
         subtitle="What everyone's binge-watching"
-        icon="📺"
         shows={popular}
         loading={loadingPopular}
         error={errorPopular}
@@ -322,21 +296,30 @@ function TVShows() {
         hasMore={hasMorePopular}
       />
 
+      <SectionGroup label="Critically Acclaimed" />
+      <TVShowSection
+        title="Top Rated Series"
+        subtitle="Highest rated shows of all time"
+        shows={topRated}
+        loading={loadingTopRated}
+        error={errorTopRated}
+        onLoadMore={loadTopRated}
+        hasMore={hasMoreTopRated}
+      />
+
+      <SectionGroup label="On Air Now" />
       <TVShowSection
         title="Airing Today"
-        subtitle="New episodes airing today"
-        icon="🎪"
+        subtitle="New episodes dropping today"
         shows={airingToday}
         loading={loadingAiringToday}
         error={errorAiringToday}
         onLoadMore={loadAiringToday}
         hasMore={hasMoreAiringToday}
       />
-
       <TVShowSection
-        title="On The Air"
-        subtitle="Currently airing series"
-        icon="📡"
+        title="Currently On The Air"
+        subtitle="Series with new episodes this week"
         shows={onTheAir}
         loading={loadingOnTheAir}
         error={errorOnTheAir}

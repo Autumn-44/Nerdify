@@ -4,6 +4,7 @@ import {
   saveRating,
   removeRating,
 } from '../utils/ratingsStorage'
+import { autoCompleteOnRating } from '../utils/watchStatusStorage'
 
 export const RatingsContext = createContext()
 
@@ -13,6 +14,8 @@ function RatingsProvider({ children }) {
   const rate = useCallback((movieId, value) => {
     saveRating(movieId, value)
     setRatings(prev => ({ ...prev, [movieId]: value }))
+    // Automatically set watch status to completed
+    autoCompleteOnRating(movieId)
   }, [])
 
   const unrate = useCallback(movieId => {

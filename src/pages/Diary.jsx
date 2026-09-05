@@ -396,8 +396,7 @@ function Diary() {
   return (
     <MainLayout>
       <div className='mb-8'>
-        <h1 className='text-4xl font-black mb-2 flex items-center gap-3'>
-          <span className='text-5xl'>📔</span>
+        <h1 className='text-2xl sm:text-4xl font-black mb-2'>
           My Diary
         </h1>
         <p className='text-gray-400'>
@@ -406,7 +405,7 @@ function Diary() {
       </div>
 
       {/* Stats */}
-      <div className='grid grid-cols-2 md:grid-cols-5 gap-4 mb-8'>
+      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-8'>
         <div className='bg-gradient-to-br from-orange-400/10 to-orange-500/10 rounded-xl p-6 border border-orange-400/20'>
           <div className='text-3xl font-black text-orange-400 mb-1'>{films.length}</div>
           <div className='text-sm text-gray-400'>Films Logged</div>
@@ -425,7 +424,7 @@ function Diary() {
         </div>
         <div className='bg-gradient-to-br from-primary-400/10 to-primary-500/10 rounded-xl p-6 border border-primary-400/20'>
           <div className='flex items-center gap-2 mb-1'>
-            <span className='text-2xl'>🔥</span>
+            <span className='text-2xl'></span>
             <div className='text-3xl font-black text-primary-400'>{currentStreak}</div>
           </div>
           <div className='text-sm text-gray-400'>

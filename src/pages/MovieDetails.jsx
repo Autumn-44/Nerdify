@@ -9,6 +9,7 @@ import MovieInfo from '../components/movie/MovieInfo'
 import MovieTrailer from '../components/movie/MovieTrailer'
 import SimilarMovies from '../components/movie/SimilarMovies'
 import StarRating from '../components/movie/StarRating'
+import FolderSelectionModal from '../components/watchlist/FolderSelectionModal'
 import movieService from '../services/movieService'
 import useRatings from '../hooks/useRatings'
 import {
@@ -16,6 +17,7 @@ import {
   isInWatchlist,
   removeFromWatchlist,
 } from '../utils/watchlistStorage'
+import { addMovieToFolders, isMovieInAnyFolder } from '../utils/watchlistFolders'
 import { addDiaryEntry } from '../utils/diaryStorage'
 
 const RATING_LABELS = {
@@ -55,6 +57,7 @@ function MovieDetails() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [watchlisted, setWatchlisted] = useState(false)
+  const [showFolderModal, setShowFolderModal] = useState(false)
   const [showDiaryModal, setShowDiaryModal] = useState(false)
   const [diaryDate, setDiaryDate] = useState(new Date().toISOString().split('T')[0])
   const [diaryRating, setDiaryRating] = useState(null)
@@ -79,7 +82,7 @@ function MovieDetails() {
       .getMovieDetails(id)
       .then(data => {
         setMovie(data)
-        setWatchlisted(isInWatchlist(data.id))
+        setWatchlisted(isInWatchlist(data.id) || isMovieInAnyFolder(data.id))
       })
       .catch(() => setError('Could not load movie details.'))
       .finally(() => setLoading(false))
@@ -93,18 +96,28 @@ function MovieDetails() {
       setWatchlisted(false)
       showNotification('Removed from watchlist')
     } else {
-      const added = addToWatchlist({
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        rating: movie.rating,
-        releaseDate: movie.releaseDate,
-      })
-      if (added) {
-        setWatchlisted(true)
-        showNotification('Added to watchlist! 🎬')
-      }
+      // Show folder selection modal
+      setShowFolderModal(true)
     }
+  }
+
+  const handleFolderSelection = (folderIds) => {
+    if (!movie) return
+    
+    // Add to legacy watchlist storage
+    addToWatchlist({
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster,
+      rating: movie.rating,
+      releaseDate: movie.releaseDate,
+    })
+    
+    // Add to selected folders
+    addMovieToFolders(movie.id, folderIds)
+    
+    setWatchlisted(true)
+    showNotification('Added to watchlist!')
   }
 
   const handleAddToDiary = () => {
@@ -129,7 +142,7 @@ function MovieDetails() {
     setDraggingRating(null)
     setPublicReview('')
     setPrivateNote('')
-    showNotification('Successfully logged to diary! 📔')
+    showNotification('Successfully logged to diary!')
   }
 
   const handleRatingChange = (e) => {
@@ -217,6 +230,8 @@ function MovieDetails() {
                 currentRating={userRating}
                 onRate={rate}
                 onUnrate={unrate}
+                isUpcoming={movie.releaseDate && new Date(movie.releaseDate) > new Date()}
+                releaseDate={movie.releaseDate}
               />
             </div>
           </div>
@@ -255,8 +270,7 @@ function MovieDetails() {
           <div className='bg-gradient-to-br from-[#1a1f2e] to-[#161b22] rounded-2xl p-6 max-w-lg w-full border border-white/10 max-h-[90vh] overflow-y-auto'
             onClick={e => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-6'>
-              <h3 className='text-2xl font-black text-white flex items-center gap-2'>
-                <span className='text-3xl'>📔</span>
+              <h3 className='text-2xl font-black text-white'>
                 Log to Diary
               </h3>
               <button
@@ -273,7 +287,7 @@ function MovieDetails() {
               {/* Date */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-2'>
-                  📅 When did you watch it?
+                  When did you watch it?
                 </label>
                 <DatePicker
                   value={diaryDate}
@@ -285,7 +299,7 @@ function MovieDetails() {
               {/* Slider Rating */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-3'>
-                  ⭐ Your Rating (Optional)
+                  Your Rating (Optional)
                 </label>
                 <div className='bg-white/5 rounded-lg p-4 border border-white/10'>
                   <div className='flex items-end gap-3 mb-3'>
@@ -402,6 +416,14 @@ function MovieDetails() {
           </div>
         </div>
       )}
+
+      {/* Folder Selection Modal */}
+      <FolderSelectionModal
+        isOpen={showFolderModal}
+        onClose={() => setShowFolderModal(false)}
+        onSelectFolders={handleFolderSelection}
+        movieTitle={movie?.title || ''}
+      />
 
       {/* Toast Notification */}
       {showToast && (

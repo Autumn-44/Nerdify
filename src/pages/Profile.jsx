@@ -68,7 +68,7 @@ function Profile() {
           <div className='flex flex-col md:flex-row items-start md:items-center gap-6'>
             {/* Avatar */}
             <div className='relative'>
-              <div className='w-32 h-32 rounded-full shadow-xl overflow-hidden border-4 border-orange-500/30 bg-black'>
+              <div className='w-24 h-24 sm:w-32 sm:h-32 rounded-full shadow-xl overflow-hidden border-4 border-orange-500/30 bg-black'>
                 {user?.photoURL ? (
                   <img
                     src={user.photoURL}
@@ -76,7 +76,7 @@ function Profile() {
                     className='w-full h-full object-cover'
                   />
                 ) : (
-                  <div className='w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-5xl font-bold text-white'>
+                  <div className='w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-4xl sm:text-5xl font-bold text-white'>
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                 )}

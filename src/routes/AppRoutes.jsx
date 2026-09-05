@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
+import PageTransition from '../components/common/PageTransition'
 
 import Home from '../pages/Home'
 import TVShows from '../pages/TVShows'
@@ -6,7 +7,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import ForgotPassword from '../pages/ForgotPassword'
 import Search from '../pages/Search'
-import Watchlist from '../pages/Watchlist'
+import WatchlistNew from '../pages/WatchlistNew'
 import Diary from '../pages/Diary'
 import MovieDetails from '../pages/MovieDetails'
 import TVShowDetails from '../pages/TVShowDetails'
@@ -21,8 +22,9 @@ import ProtectedRoute from '../components/common/ProtectedRoute'
 function AppRoutes() {
   return (
     <HashRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
+      <PageTransition>
+        <Routes>
+          <Route path='/' element={<Home />} />
 
         <Route path='/tv-shows' element={<TVShows />} />
 
@@ -53,7 +55,7 @@ function AppRoutes() {
           path='/watchlist'
           element={
             <ProtectedRoute>
-              <Watchlist />
+              <WatchlistNew />
             </ProtectedRoute>
           }
         />
@@ -88,7 +90,8 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-      </Routes>
+        </Routes>
+      </PageTransition>
     </HashRouter>
   )
 }

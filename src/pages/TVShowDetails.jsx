@@ -64,7 +64,15 @@ function TVShowDetails() {
   const [privateNote, setPrivateNote] = useState('')
   const [watchStatus, setWatchStatus] = useState(WATCH_STATUS.NOT_STARTED)
   const [showStatusMenu, setShowStatusMenu] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const { getRating, rate, unrate } = useRatings()
+
+  const showNotification = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 3000)
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -162,7 +170,7 @@ function TVShowDetails() {
     setDraggingRating(null)
     setPublicReview('')
     setPrivateNote('')
-    alert('Added to diary!')
+    showNotification('Successfully logged to diary!')
   }
 
   const handleRatingChange = (e) => {
@@ -300,7 +308,7 @@ function TVShowDetails() {
 
               <p className='text-gray-300 leading-relaxed mb-4'>{show.overview}</p>
 
-              <div className='grid grid-cols-2 gap-4 text-sm'>
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm'>
                 <div>
                   <span className='text-gray-500'>First Air Date:</span>
                   <p className='text-white font-semibold'>{show.releaseDate}</p>
@@ -368,7 +376,7 @@ function TVShowDetails() {
           <section id='episodes-section'>
             <div className='mb-6'>
               <h2 className='text-2xl font-black mb-2' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
-                📺 Seasons & Episodes
+                Seasons & Episodes
               </h2>
               <p className='text-sm' style={{ color: '#8b949e' }}>
                 {watchStatus === WATCH_STATUS.WATCHING
@@ -411,9 +419,8 @@ function TVShowDetails() {
           <div className='bg-gradient-to-br from-[#1a1f2e] to-[#161b22] rounded-2xl p-6 max-w-lg w-full border border-white/10 max-h-[90vh] overflow-y-auto'
             onClick={e => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-6'>
-              <h3 className='text-2xl font-black text-white flex items-center gap-2'>
-                <span className='text-3xl'>📺</span>
-                Log Episode
+              <h3 className='text-2xl font-black text-white'>
+                Log to Diary
               </h3>
               <button
                 onClick={() => setShowDiaryModal(false)}
@@ -429,7 +436,7 @@ function TVShowDetails() {
               {/* Date */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-2'>
-                  📅 When did you watch this episode?
+                  When did you watch this?
                 </label>
                 <DatePicker
                   value={diaryDate}
@@ -441,7 +448,7 @@ function TVShowDetails() {
               {/* Slider Rating */}
               <div>
                 <label className='block text-sm font-semibold text-gray-400 mb-3'>
-                  ⭐ Your Rating (Optional)
+                  Your Rating (Optional)
                 </label>
                 <div className='bg-white/5 rounded-lg p-4 border border-white/10'>
                   <div className='flex items-end gap-3 mb-3'>
@@ -555,6 +562,18 @@ function TVShowDetails() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showToast && (
+        <div className='fixed bottom-8 right-8 z-50 animate-slide-up'>
+          <div className='bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-primary-400/30'>
+            <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='w-6 h-6 flex-shrink-0'>
+              <path d='M22 11.08V12a10 10 0 1 1-5.93-9.14' />
+              <polyline points='22 4 12 14.01 9 11.01' />
+            </svg>
+            <span className='font-semibold'>{toastMessage}</span>
           </div>
         </div>
       )}

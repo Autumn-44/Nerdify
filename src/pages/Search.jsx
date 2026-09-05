@@ -57,7 +57,7 @@ function Search() {
   return (
     <MainLayout>
       <div className='max-w-3xl mx-auto pt-8 pb-4'>
-        <h1 className='text-4xl font-black text-center mb-2'>Find Your Next Watch</h1>
+        <h1 className='text-2xl sm:text-4xl font-black text-center mb-2'>Find Your Next Watch</h1>
         <p className='text-gray-400 text-center mb-8'>Search movies, TV shows, actors, and more</p>
 
         <div className='relative'>
@@ -99,7 +99,6 @@ function Search() {
 
         {!isLoading && searched && totalResults === 0 && (
           <div className='text-center py-20'>
-            <p className='text-5xl mb-4'>🎬</p>
             <p className='text-gray-400 text-lg'>No results for "<span className='text-white'>{query}</span>"</p>
             <p className='text-gray-600 text-sm mt-1'>Try a different search term</p>
           </div>
@@ -107,7 +106,6 @@ function Search() {
 
         {!isLoading && !searched && !query && (
           <div className='text-center py-20'>
-            <p className='text-5xl mb-4'>🍿</p>
             <p className='text-gray-500'>Start typing to search movies, TV shows, and people</p>
           </div>
         )}
@@ -115,47 +113,25 @@ function Search() {
         {!isLoading && totalResults > 0 && (
           <div className='space-y-6'>
             {/* Filter Tabs */}
-            <div className='flex items-center gap-4 border-b border-white/10 pb-4'>
-              <button
-                onClick={() => setActiveTab('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  activeTab === 'all'
-                    ? 'bg-primary-400/20 text-primary-400'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                All ({totalResults})
-              </button>
-              <button
-                onClick={() => setActiveTab('movies')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  activeTab === 'movies'
-                    ? 'bg-primary-400/20 text-primary-400'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                Movies ({movies.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('tv')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  activeTab === 'tv'
-                    ? 'bg-primary-400/20 text-primary-400'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                TV Shows ({tvShows.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('people')}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  activeTab === 'people'
-                    ? 'bg-primary-400/20 text-primary-400'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                People ({people.length})
-              </button>
+            <div className='flex items-center gap-2 overflow-x-auto border-b border-white/10 pb-4'>
+              {[
+                { key: 'all', label: `All (${totalResults})` },
+                { key: 'movies', label: `Movies (${movies.length})` },
+                { key: 'tv', label: `TV Shows (${tvShows.length})` },
+                { key: 'people', label: `People (${people.length})` },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                    activeTab === key
+                      ? 'bg-primary-400/20 text-primary-400'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
 
             {/* Movies Section */}

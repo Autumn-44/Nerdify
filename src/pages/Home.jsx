@@ -5,7 +5,19 @@ import MainLayout from '../layouts/MainLayout'
 import Loader from '../components/common/Loader'
 import movieService from '../services/movieService'
 
-function MovieSection({ title, subtitle, icon, movies, loading, error, onLoadMore, hasMore }) {
+function SectionGroup({ label }) {
+  return (
+    <div className='flex items-center gap-4 mb-10 mt-4'>
+      <span className='text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full'
+        style={{ color: '#fbbf24', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.18)' }}>
+        {label}
+      </span>
+      <div className='flex-1 h-px' style={{ background: 'linear-gradient(to right, rgba(251,191,36,0.15), transparent)' }} />
+    </div>
+  )
+}
+
+function MovieSection({ title, subtitle, movies, loading, error, onLoadMore, hasMore }) {
   const observerTarget = useRef(null)
 
   useEffect(() => {
@@ -33,11 +45,10 @@ function MovieSection({ title, subtitle, icon, movies, loading, error, onLoadMor
   if (!movies.length && !loading) return null
 
   return (
-    <div className='mb-16'>
-      <div className='flex items-center gap-4 mb-6'>
+    <div className='mb-12'>
+      <div className='flex items-center gap-4 mb-5'>
         <div>
-          <h2 className='text-2xl font-black flex items-center gap-2' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
-            <span className='text-3xl'>{icon}</span>
+          <h2 className='text-2xl font-black' style={{ color: '#e6edf3', letterSpacing: '-0.02em' }}>
             {title}
           </h2>
           <p className='text-sm mt-1' style={{ color: '#8b949e' }}>{subtitle}</p>
@@ -171,7 +182,7 @@ function Home() {
   return (
     <MainLayout>
       {/* Hero Section */}
-      <div className='relative -mx-6 md:-mx-10 -mt-6 px-6 md:px-10 pt-20 pb-20 mb-16 overflow-hidden'>
+      <div className='relative -mx-6 md:-mx-10 -mt-6 px-6 md:px-10 pt-12 pb-10 mb-6 overflow-hidden'>
         {/* Animated Background */}
         <div className='absolute inset-0 pointer-events-none'>
           <div className='absolute inset-0' style={{
@@ -186,33 +197,18 @@ function Home() {
         </div>
 
         <div className='relative max-w-3xl'>
-          {/* Badge */}
-          <div className='inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-8 border backdrop-blur-sm'
-            style={{ 
-              color: '#fbbf24', 
-              background: 'rgba(251, 191, 36,0.1)', 
-              borderColor: 'rgba(251, 191, 36,0.3)',
-              boxShadow: '0 0 20px rgba(251, 191, 36,0.1)'
-            }}>
-            <span className='w-2 h-2 rounded-full bg-primary-400 animate-pulse' />
-            Updated Daily with Fresh Content
-          </div>
-
           {/* Main Heading */}
-          <h1 className='text-6xl md:text-7xl font-black leading-[1.05] mb-6'
-            style={{ letterSpacing: '-0.04em', color: '#e6edf3' }}>
-            Your Ultimate{' '}
-            <span style={{
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-6 whitespace-nowrap'
+            style={{ letterSpacing: '-0.03em', color: '#e6edf3' }}>
+            Your "<span style={{
               background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-            }}>
-              Cinema Hub
-            </span>
+            }}>Absolute Cinema</span>" Lounge
           </h1>
 
           {/* Subtitle */}
-          <p className='text-xl mb-10 leading-relaxed max-w-2xl' style={{ color: '#8b949e' }}>
+          <p className='text-base sm:text-xl mb-8 leading-relaxed max-w-2xl' style={{ color: '#8b949e' }}>
             Discover, rate, and track movies. Build your watchlist, explore trending films, and never miss what's hot in cinema.
           </p>
 
@@ -248,25 +244,13 @@ function Home() {
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className='flex flex-wrap gap-8 mt-12 pt-8 border-t' style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <div>
-              <div className='text-3xl font-black' style={{ color: '#fbbf24' }}>10K+</div>
-              <div className='text-sm' style={{ color: '#8b949e' }}>Movies Available</div>
-            </div>
-            <div>
-              <div className='text-3xl font-black' style={{ color: '#f59e0b' }}>Daily</div>
-              <div className='text-sm' style={{ color: '#8b949e' }}>Updates</div>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Movie Sections with Infinite Scroll */}
+      <SectionGroup label="What's Hot" />
       <MovieSection
         title="Trending This Week"
         subtitle="Most-watched movies right now"
-        icon="🔥"
         movies={trending}
         loading={loadingTrending}
         error={errorTrending}
@@ -274,10 +258,10 @@ function Home() {
         hasMore={hasMoreTrending}
       />
 
+      <SectionGroup label="Critically Acclaimed" />
       <MovieSection
         title="Top Rated Recent Films"
         subtitle="Highest rated movies from 2024 onwards"
-        icon="⭐"
         movies={topRated}
         loading={loadingTopRated}
         error={errorTopRated}
@@ -285,21 +269,19 @@ function Home() {
         hasMore={hasMoreTopRated}
       />
 
+      <SectionGroup label="New & Upcoming" />
       <MovieSection
         title="Latest Releases"
         subtitle="Recently released movies"
-        icon="🎭"
         movies={latestReleases}
         loading={loadingLatestReleases}
         error={errorLatestReleases}
         onLoadMore={loadLatestReleases}
         hasMore={hasMoreLatestReleases}
       />
-
       <MovieSection
         title="Coming Soon"
         subtitle="Upcoming releases to watch for"
-        icon="🎪"
         movies={upcoming}
         loading={loadingUpcoming}
         error={errorUpcoming}
