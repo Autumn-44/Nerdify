@@ -7,6 +7,8 @@ import {
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   onAuthStateChanged,
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
@@ -87,20 +89,55 @@ export const login = async (email, password) => {
 export const loginWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider()
-    const userCredential = await signInWithPopup(auth, provider)
+    provider.addScope('email')
+    provider.addScope('profile')
 
-    return {
-      success: true,
-      user: userCredential.user,
-      message: 'Google sign-in successful!',
+    // Try popup first; fall back to redirect if the browser blocks it
+    try {
+      const userCredential = await signInWithPopup(auth, provider)
+      return {
+        success: true,
+        user: userCredential.user,
+        message: 'Google sign-in successful!',
+      }
+    } catch (popupError) {
+      // Popup was blocked or closed — fall back to redirect flow
+      if (
+        popupError.code === 'auth/popup-blocked' ||
+        popupError.code === 'auth/popup-closed-by-user' ||
+        popupError.code === 'auth/cancelled-popup-request'
+      ) {
+        await signInWithRedirect(auth, provider)
+        // Page will reload after redirect; result is handled by checkRedirectResult
+        return { success: true, redirecting: true }
+      }
+      throw popupError
     }
   } catch (error) {
-    console.error('Google sign-in error:', error)
+    console.error('Google sign-in error:', error.code, error.message)
     return {
       success: false,
       error: error.code,
       message: getErrorMessage(error.code),
     }
+  }
+}
+
+/**
+ * Check if the page was loaded after a Google redirect sign-in
+ * Call this once on app mount (e.g. in AuthContext)
+ * @returns {Promise<Object>} User or null
+ */
+export const checkRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth)
+    if (result) {
+      return { success: true, user: result.user }
+    }
+    return { success: false, user: null }
+  } catch (error) {
+    console.error('Redirect result error:', error.code, error.message)
+    return { success: false, error: error.code, message: getErrorMessage(error.code) }
   }
 }
 
@@ -298,8 +335,12 @@ const getErrorMessage = (errorCode) => {
     'auth/invalid-credential': 'Invalid email or password. Please try again.',
     'auth/too-many-requests': 'Too many failed attempts. Please try again later.',
     'auth/network-request-failed': 'Network error. Please check your internet connection.',
-    'auth/popup-closed-by-user': 'Sign-in popup was closed before completing.',
-    'auth/cancelled-popup-request': 'Only one popup request is allowed at a time.',
+    'auth/popup-closed-by-user': 'Google sign-in was cancelled.',
+    'auth/cancelled-popup-request': 'Only one sign-in request is allowed at a time.',
+    'auth/popup-blocked': 'Popup was blocked by browser. Redirecting instead…',
+    'auth/unauthorized-domain': 'This domain is not authorized in Firebase. Add it in Firebase Console → Authentication → Authorized Domains.',
+    'auth/invalid-api-key': 'Firebase API key is missing or invalid. Check your environment variables.',
+    'auth/configuration-not-found': 'Firebase project configuration not found. Check your environment variables.',
   }
 
   return errorMessages[errorCode] || 'An unexpected error occurred. Please try again.'
@@ -309,6 +350,7 @@ export default {
   register,
   login,
   loginWithGoogle,
+  checkRedirectResult,
   logout,
   resetPassword,
   resendVerificationEmail,

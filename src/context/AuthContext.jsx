@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
-import { onAuthStateChange, logout as authLogout, getCurrentUser, getProfilePhoto } from '../services/authService'
+import { onAuthStateChange, logout as authLogout, getCurrentUser, getProfilePhoto, checkRedirectResult } from '../services/authService'
 
 export const AuthContext = createContext()
 
@@ -8,6 +8,9 @@ function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Handle redirect sign-in result (Google sign-in on deployed sites)
+    checkRedirectResult().catch(() => {})
+
     // Subscribe to Firebase auth state changes
     const unsubscribe = onAuthStateChange((firebaseUser) => {
       if (firebaseUser) {
