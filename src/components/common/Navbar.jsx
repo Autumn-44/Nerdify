@@ -98,7 +98,7 @@ function Navbar() {
 
             {/* Logo */}
             <Link to='/' className='flex items-center gap-2.5 group flex-shrink-0'>
-              <div className='flex-shrink-0 h-10 w-10 rounded-full overflow-hidden ring-1 ring-white/10 transition-all duration-300 group-hover:scale-105'>
+              <div className='flex-shrink-0 h-10 w-10 rounded-full overflow-hidden ring-1 ring-[rgba(15,23,42,0.92)] transition-all duration-300 group-hover:scale-105'>
                 <img src='/logo.png' alt='Nerdify logo' className='h-full w-full object-cover object-center' />
               </div>
               <div className='flex flex-col'>
@@ -240,7 +240,7 @@ function Navbar() {
             <div className='flex items-center justify-between px-5 py-4 border-b'
               style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
               <Link to='/' className='flex items-center gap-2.5'>
-                <div className='flex-shrink-0 h-9 w-9 rounded-full overflow-hidden ring-1 ring-white/10'>
+                <div className='flex-shrink-0 h-9 w-9 rounded-full overflow-hidden ring-1 ring-[#0d1117]'>
                   <img src='/logo.png' alt='Nerdify logo' className='h-full w-full object-cover object-center' />
                 </div>
                 <span className='text-lg font-black bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent'>
